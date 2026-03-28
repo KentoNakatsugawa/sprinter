@@ -1,0 +1,18 @@
+# Render deployment configuration
+services:
+  - type: web
+    name: jtvo-dashboard
+    env: docker
+    plan: free
+    healthCheckPath: /_stcore/health
+    envVars:
+      - key: JIRA_BASE_URL
+        sync: false
+      - key: JIRA_EMAIL
+        sync: false
+      - key: JIRA_API_TOKEN
+        sync: false
+      - key: JIRA_STORY_POINTS_FIELD
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false

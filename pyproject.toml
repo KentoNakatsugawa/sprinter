@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "jtvo"
+version = "0.1.0"
+description = "Jira Truth Velocity Observer — AI-powered sprint analysis dashboard"
+authors = ["Nakatsugawa Kenjin"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+streamlit = ">=1.30"
+atlassian-python-api = ">=3.41"
+duckdb = ">=0.9"
+langchain-google-genai = ">=1.0"
+plotly = ">=5.18"
+pandas = ">=2.0"
+python-dotenv = ">=1.0"
+pydantic = ">=2.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
