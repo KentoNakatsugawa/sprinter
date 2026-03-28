@@ -29,13 +29,14 @@ def _check_password_simple() -> bool:
     """
     # Get password from secrets or env
     correct_password = None
-    
+
     # Try Streamlit secrets first
     try:
-        correct_password = st.secrets.get("APP_PASSWORD")
+        if hasattr(st, 'secrets') and "APP_PASSWORD" in st.secrets:
+            correct_password = st.secrets["APP_PASSWORD"]
     except Exception:
         pass
-    
+
     # Fallback to environment variable
     if not correct_password:
         correct_password = os.getenv("APP_PASSWORD")
