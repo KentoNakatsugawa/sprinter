@@ -1,0 +1,8 @@
+streamlit>=1.30
+atlassian-python-api>=3.41
+duckdb>=0.9
+langchain-google-genai>=1.0
+plotly>=5.18
+pandas>=2.0
+python-dotenv>=1.0
+pydantic>=2.5
