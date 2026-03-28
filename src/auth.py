@@ -44,7 +44,13 @@ def _check_password_simple() -> bool:
     # If no password is set, skip authentication (development mode)
     if not correct_password:
         return True
-    
+
+    # Initialize session state
+    if "password" not in st.session_state:
+        st.session_state["password"] = ""
+    if "password_correct" not in st.session_state:
+        st.session_state["password_correct"] = None
+
     def password_entered():
         """Callback when password is entered."""
         entered_password = st.session_state.get("password", "")
@@ -59,7 +65,7 @@ def _check_password_simple() -> bool:
             st.session_state["password_correct"] = False
     
     # First run or password not yet verified
-    if st.session_state.get("password_correct", None) is None:
+    if st.session_state["password_correct"] is None:
         st.markdown("""
         <style>
             .auth-container {
