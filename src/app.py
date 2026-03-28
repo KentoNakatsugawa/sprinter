@@ -3,7 +3,15 @@
 from __future__ import annotations
 
 import os
+import sys
 from datetime import date, timedelta
+from pathlib import Path
+
+# Add parent directory to path for Streamlit Cloud compatibility
+# This allows imports to work both locally and when deployed
+_parent = Path(__file__).parent.parent
+if str(_parent) not in sys.path:
+    sys.path.insert(0, str(_parent))
 
 import pandas as pd
 import plotly.graph_objects as go
