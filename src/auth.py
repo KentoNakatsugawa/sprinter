@@ -47,12 +47,14 @@ def _check_password_simple() -> bool:
     
     def password_entered():
         """Callback when password is entered."""
-        if hmac.compare_digest(
-            st.session_state["password"],
+        entered_password = st.session_state.get("password", "")
+        if entered_password and hmac.compare_digest(
+            entered_password,
             correct_password
         ):
             st.session_state["password_correct"] = True
-            del st.session_state["password"]  # Don't store password
+            if "password" in st.session_state:
+                del st.session_state["password"]  # Don't store password
         else:
             st.session_state["password_correct"] = False
     
