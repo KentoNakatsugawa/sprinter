@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrum Dashboard — JTVO</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ict-blue-50: #e8f1fe;
+            --ict-blue-100: #d9e6ff;
+            --ict-blue-200: #c5d7fb;
+            --ict-blue-600: #3460fb;
+            --ict-blue-800: #0031d8;
+            --ict-blue-1000: #00118f;
+            --ict-green-50: #e6f5ec;
+            --ict-green-100: #c2e5d1;
+            --ict-green-600: #259d63;
+            --ict-green-800: #197a4b;
+            --ict-yellow-100: #fff0b3;
+            --ict-yellow-700: #b78f00;
+            --ict-orange-50: #ffeee2;
+            --ict-orange-600: #fb5b01;
+            --ict-orange-800: #c74700;
+            --ict-red-50: #fdeeee;
+            --ict-red-100: #ffdada;
+            --ict-red-800: #ec0000;
+            --ict-red-900: #ce0000;
+            --ict-gray-50: #f2f2f2;
+            --ict-gray-100: #e6e6e6;
+            --ict-gray-200: #cccccc;
+            --ict-gray-500: #7f7f7f;
+            --ict-gray-700: #4d4d4d;
+            --ict-gray-800: #333333;
+            --ict-gray-900: #1a1a1a;
+            --ict-white: #ffffff;
+            --ict-purple-50: #f1eafa;
+            --ict-purple-700: #6f23d0;
+            --ict-purple-800: #5c10be;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--ict-gray-50);
+            color: var(--ict-gray-900);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: var(--ict-white);
+            border: 1px solid var(--ict-gray-100);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 12px 2px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--ict-gray-500);
+            font-size: 0.875rem;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            background: var(--ict-blue-50);
+            color: var(--ict-blue-800);
+            border: 1px solid var(--ict-blue-200);
+            border-radius: 0.25rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .filter-btn:hover {
+            background: var(--ict-blue-100);
+            border-color: var(--ict-blue-600);
+        }
+
+        .filter-btn.active {
+            background: var(--ict-blue-800);
+            color: var(--ict-white);
+            border-color: var(--ict-blue-800);
+        }
+
+        select {
+            background: var(--ict-white);
+            border: 1px solid var(--ict-gray-200);
+            border-radius: 0.25rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        /* Alert */
+        .alert {
+            border-radius: 0.5rem;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+
+        .alert-red {
+            background: var(--ict-red-50);
+            border-color: var(--ict-red-800);
+            color: var(--ict-red-900);
+        }
+
+        .alert-yellow {
+            background: var(--ict-orange-50);
+            border-color: var(--ict-orange-600);
+            color: var(--ict-orange-800);
+        }
+
+        .alert-green {
+            background: var(--ict-green-50);
+            border-color: var(--ict-green-600);
+            color: var(--ict-green-800);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--ict-white);
+            border: 1px solid var(--ict-gray-100);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px 1px rgba(0,0,0,0.1);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-desc {
+            font-size: 0.875rem;
+            color: var(--ict-gray-500);
+            margin-bottom: 1rem;
+        }
+
+        /* KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .kpi-card {
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .kpi-card .label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .kpi-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Team Cards */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .team-card {
+            padding: 0.75rem;
+            border-left: 3px solid;
+            background: #f9fafb;
+            border-radius: 0 0.25rem 0.25rem 0;
+        }
+
+        .team-card h4 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.375rem;
+        }
+
+        .team-card .stats {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.75rem;
+            color: var(--ict-gray-700);
+        }
+
+        /* Trend Cards */
+        .trend-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .trend-card {
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+
+        .trend-card .team-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .trend-card .trend-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .trend-card .trend-change {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            opacity: 0.85;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--ict-gray-100);
+        }
+
+        th {
+            background: var(--ict-gray-50);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: var(--ict-gray-50);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--ict-gray-200);
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--ict-gray-500);
+            cursor: pointer;
+            border-radius: 0.25rem;
+            transition: all 0.15s;
+        }
+
+        .tab-btn:hover {
+            color: var(--ict-blue-800);
+            background: var(--ict-blue-50);
+        }
+
+        .tab-btn.active {
+            color: var(--ict-blue-800);
+            background: var(--ict-blue-100);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Sprint Progress */
+        .sprint-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .sprint-card {
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 1px solid;
+        }
+
+        .sprint-card .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .progress-bar {
+            background: var(--ict-gray-100);
+            border-radius: 0.25rem;
+            height: 8px;
+            overflow: hidden;
+            margin: 6px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 0.25rem;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            color: var(--ict-gray-500);
+        }
+
+        /* Two Column Layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Scrum Dashboard</h1>
+            <p>開発チーム全体の可視化とKPI追跡</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filter-group" id="team-filters">
+                <button class="filter-btn active" data-team="全チーム">全チーム</button>
+                <button class="filter-btn" data-team="A Scrum">A Scrum</button>
+                <button class="filter-btn" data-team="B Scrum">B Scrum</button>
+                <button class="filter-btn" data-team="AI&Analytics">AI&Analytics</button>
+            </div>
+            <select id="period-select">
+                <option value="0">全期間</option>
+                <option value="28">直近4週</option>
+                <option value="56">直近8週</option>
+                <option value="90">直近3ヶ月</option>
+                <option value="180">直近6ヶ月</option>
+            </select>
+        </div>
+
+        <!-- Sufficiency Alert -->
+        <div id="sufficiency-alert"></div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="team">チーム別ダッシュボード</button>
+            <button class="tab-btn" data-tab="individual">個人別ベロシティ</button>
+        </div>
+
+        <!-- Tab Content: Team Dashboard -->
+        <div id="tab-team" class="tab-content active">
+            <!-- Summary Card -->
+            <div class="card">
+                <p class="card-title">チーム全体ベロシティサマリ</p>
+                <p class="card-desc">選択期間内の全チーム合算KPI。SP = Jira上の自己申告ストーリーポイント、達成率 = 完了SP / 計画SP</p>
+
+                <div class="kpi-grid" id="kpi-grid">
+                    <div class="kpi-card" style="background: var(--ict-blue-50); color: var(--ict-blue-1000);">
+                        <div class="label">合計 SP</div>
+                        <div class="value" id="total-sp">-</div>
+                    </div>
+                    <div class="kpi-card" style="background: var(--ict-green-50); color: #115a36;">
+                        <div class="label">完了 SP</div>
+                        <div class="value" id="done-sp">-</div>
+                    </div>
+                    <div class="kpi-card" style="background: var(--ict-purple-50); color: var(--ict-purple-800);">
+                        <div class="label">達成率</div>
+                        <div class="value" id="completion-pct">-</div>
+                    </div>
+                    <div class="kpi-card" style="background: var(--ict-orange-50); color: var(--ict-orange-800);">
+                        <div class="label">平均ベロシティ/週</div>
+                        <div class="value" id="avg-velocity">-</div>
+                    </div>
+                </div>
+
+                <div class="team-grid" id="team-summary-grid"></div>
+            </div>
+
+            <!-- Velocity Trend -->
+            <div class="card">
+                <p class="card-title">ベロシティトレンド分析</p>
+                <p class="card-desc">直近8週のSP推移から算出。直近3週平均 vs 前3週平均の変化率で改善/安定/低下を判定</p>
+                <div class="trend-grid" id="trend-grid"></div>
+            </div>
+
+            <!-- Velocity Chart -->
+            <div class="card">
+                <p class="card-title">チームベロシティ</p>
+                <p class="card-desc">棒グラフ: 週別完了SP（完了日ベース）</p>
+                <div class="chart-container">
+                    <canvas id="velocity-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Sprint Progress -->
+            <div class="card">
+                <p class="card-title">現在のスプリント進捗状況</p>
+                <p class="card-desc">Jira上でactiveなスプリントの完了SP / 計画SP。60%以上で「順調」、未満で「要注意」と判定</p>
+                <div class="sprint-grid" id="sprint-grid"></div>
+            </div>
+
+            <!-- Leaderboard & Status -->
+            <div class="two-col">
+                <div class="card">
+                    <p class="card-title">個人別 SP ランキング</p>
+                    <p class="card-desc">期間別の完了SP順</p>
+                    <div class="tabs">
+                        <button class="tab-btn active" data-lb-tab="all">累計</button>
+                        <button class="tab-btn" data-lb-tab="last_week">前週</button>
+                        <button class="tab-btn" data-lb-tab="last_3_weeks">過去3週</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>担当者</th>
+                                    <th>イシュー数</th>
+                                    <th>合計SP</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <p class="card-title">ステータス分布</p>
+                    <p class="card-desc">Jiraステータスカテゴリ別のSP割合</p>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="status-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Issues Table -->
+            <div class="card">
+                <p class="card-title">Rawデータ</p>
+                <p class="card-desc">Jiraから取得した全イシュー一覧</p>
+                <div class="table-container">
+                    <table id="issues-table">
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>概要</th>
+                                <th>ステータス</th>
+                                <th>チーム</th>
+                                <th>担当者</th>
+                                <th>SP</th>
+                                <th>完了日</th>
+                            </tr>
+                        </thead>
+                        <tbody id="issues-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Individual Velocity -->
+        <div id="tab-individual" class="tab-content">
+            <div class="card">
+                <p class="card-title">個人別ベロシティ</p>
+                <p class="card-desc">担当者ごとの週別完了SP</p>
+                <div class="chart-container" style="height: 500px;">
+                    <canvas id="individual-velocity-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL - use localhost:8000 for local dev, /api for production
+        const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:8000/api' : '/api';
+
+        // Team colors
+        const TEAM_COLORS = {
+            'A Scrum': '#0031d8',
+            'B Scrum': '#6f23d0',
+            'AI&Analytics': '#259d63'
+        };
+
+        // State
+        let currentTeam = '全チーム';
+        let currentDays = 0;
+        let currentLbPeriod = 'all';
+        let velocityChart = null;
+        let statusChart = null;
+        let individualChart = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initFilters();
+            initTabs();
+            loadAllData();
+        });
+
+        // Filter handling
+        function initFilters() {
+            document.querySelectorAll('#team-filters .filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#team-filters .filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentTeam = btn.dataset.team;
+                    loadAllData();
+                });
+            });
+
+            document.getElementById('period-select').addEventListener('change', (e) => {
+                currentDays = parseInt(e.target.value);
+                loadAllData();
+            });
+
+            // Leaderboard tabs
+            document.querySelectorAll('[data-lb-tab]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[data-lb-tab]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentLbPeriod = btn.dataset.lbTab;
+                    loadLeaderboard();
+                });
+            });
+        }
+
+        // Tab handling
+        function initTabs() {
+            document.querySelectorAll('.tabs .tab-btn[data-tab]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tabs .tab-btn[data-tab]').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+
+                    if (btn.dataset.tab === 'individual') {
+                        loadIndividualVelocity();
+                    }
+                });
+            });
+        }
+
+        // Load all data
+        async function loadAllData() {
+            await Promise.all([
+                loadSummary(),
+                loadTeamSummary(),
+                loadVelocityTrend(),
+                loadVelocity(),
+                loadSprintProgress(),
+                loadLeaderboard(),
+                loadStatusBreakdown(),
+                loadIssues(),
+                loadSufficiency()
+            ]);
+        }
+
+        // API calls
+        async function fetchAPI(endpoint, params = {}) {
+            const url = new URL(`${API_BASE}${endpoint}`, window.location.origin);
+            Object.entries(params).forEach(([k, v]) => {
+                if (v !== null && v !== undefined) url.searchParams.append(k, v);
+            });
+            const res = await fetch(url);
+            return res.json();
+        }
+
+        // Load Summary
+        async function loadSummary() {
+            const data = await fetchAPI('/summary', { team: currentTeam, days: currentDays });
+            document.getElementById('total-sp').textContent = data.total_sp?.toFixed(0) || '0';
+            document.getElementById('done-sp').textContent = data.done_sp?.toFixed(0) || '0';
+            document.getElementById('completion-pct').textContent = (data.completion_pct?.toFixed(1) || '0') + '%';
+        }
+
+        // Load Team Summary
+        async function loadTeamSummary() {
+            const data = await fetchAPI('/team-summary', { days: currentDays });
+            const grid = document.getElementById('team-summary-grid');
+
+            // Calculate avg velocity
+            const velocity = await fetchAPI('/velocity', { days: currentDays });
+            const weeklyTotal = {};
+            velocity.forEach(v => {
+                weeklyTotal[v.week_start] = (weeklyTotal[v.week_start] || 0) + v.done_sp;
+            });
+            const weeks = Object.values(weeklyTotal);
+            const avgVelocity = weeks.length > 0 ? weeks.reduce((a, b) => a + b, 0) / weeks.length : 0;
+            document.getElementById('avg-velocity').textContent = avgVelocity.toFixed(1) + ' SP';
+
+            grid.innerHTML = data.map(team => `
+                <div class="team-card" style="border-color: ${TEAM_COLORS[team.team] || '#6b7280'}">
+                    <h4>${team.team}</h4>
+                    <div class="stats">
+                        <span>計画: <strong>${team.total_sp?.toFixed(0) || 0} SP</strong></span>
+                        <span>完了: <strong>${team.done_sp?.toFixed(0) || 0} SP</strong></span>
+                        <span>達成率: <strong>${team.completion_pct?.toFixed(0) || 0}%</strong></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load Velocity Trend
+        async function loadVelocityTrend() {
+            const data = await fetchAPI('/velocity-trend');
+            const grid = document.getElementById('trend-grid');
+
+            const teams = ['A Scrum', 'B Scrum', 'AI&Analytics'];
+            const filtered = currentTeam === '全チーム' ? teams : [currentTeam];
+
+            grid.innerHTML = filtered.map(team => {
+                const teamData = data.filter(d => d.team === team).sort((a, b) => a.week_start.localeCompare(b.week_start));
+
+                if (teamData.length < 2) {
+                    return `<div class="trend-card" style="background: var(--ict-gray-50); color: var(--ict-gray-900);">
+                        <p class="team-label">${team}</p>
+                        <p class="trend-value">-</p>
+                        <p class="trend-change">データ不足</p>
+                    </div>`;
+                }
+
+                const recent3 = teamData.slice(-3);
+                const older3 = teamData.slice(0, 3);
+                const recentAvg = recent3.reduce((a, b) => a + b.done_sp, 0) / recent3.length;
+                const olderAvg = older3.reduce((a, b) => a + b.done_sp, 0) / older3.length;
+                const change = olderAvg > 0 ? ((recentAvg - olderAvg) / olderAvg * 100) : 0;
+
+                let bg, fg, icon, label;
+                if (change > 5) {
+                    bg = 'var(--ict-green-50)'; fg = '#115a36'; icon = '↑'; label = '改善';
+                } else if (change < -5) {
+                    bg = 'var(--ict-red-50)'; fg = 'var(--ict-red-900)'; icon = '↓'; label = '低下';
+                } else {
+                    bg = 'var(--ict-gray-50)'; fg = 'var(--ict-gray-900)'; icon = '→'; label = '安定';
+                }
+
+                return `<div class="trend-card" style="background: ${bg}; color: ${fg};">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <p class="team-label">${team}</p>
+                        <span style="font-size: 1.25rem;">${icon}</span>
+                    </div>
+                    <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+                        <p class="trend-value">${recentAvg.toFixed(1)} SP</p>
+                        <span style="font-size: 0.875rem;">${change >= 0 ? '+' : ''}${change.toFixed(1)}%</span>
+                    </div>
+                    <p class="trend-change">直近3週平均・トレンド: ${label}</p>
+                </div>`;
+            }).join('');
+        }
+
+        // Load Velocity Chart
+        async function loadVelocity() {
+            const data = await fetchAPI('/velocity', { team: currentTeam === '全チーム' ? null : currentTeam, days: currentDays });
+
+            const weeks = [...new Set(data.map(d => d.week_label))].sort();
+            const teams = currentTeam === '全チーム' ? ['A Scrum', 'B Scrum', 'AI&Analytics'] : [currentTeam];
+
+            const datasets = teams.map(team => ({
+                label: team,
+                data: weeks.map(week => {
+                    const item = data.find(d => d.week_label === week && d.team === team);
+                    return item ? item.done_sp : 0;
+                }),
+                backgroundColor: TEAM_COLORS[team] || '#6b7280',
+            }));
+
+            if (velocityChart) velocityChart.destroy();
+            velocityChart = new Chart(document.getElementById('velocity-chart'), {
+                type: 'bar',
+                data: { labels: weeks, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top' } },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'ストーリーポイント' } }
+                    }
+                }
+            });
+        }
+
+        // Load Sprint Progress
+        async function loadSprintProgress() {
+            const data = await fetchAPI('/sprint-progress', { team: currentTeam === '全チーム' ? null : currentTeam });
+            const grid = document.getElementById('sprint-grid');
+
+            const active = data.filter(d => d.state === 'active');
+
+            if (active.length === 0) {
+                grid.innerHTML = '<p style="color: var(--ict-gray-500);">アクティブなスプリントがありません。</p>';
+                return;
+            }
+
+            grid.innerHTML = active.map(sprint => {
+                const pct = sprint.total_sp > 0 ? (sprint.done_sp / sprint.total_sp * 100) : 0;
+                const onTrack = pct >= 60;
+                const bg = onTrack ? 'var(--ict-green-50)' : 'var(--ict-orange-50)';
+                const fg = onTrack ? '#115a36' : 'var(--ict-orange-800)';
+                const barColor = onTrack ? 'var(--ict-green-600)' : 'var(--ict-orange-600)';
+                const icon = onTrack ? '✓' : '⚠';
+
+                return `<div class="sprint-card" style="background: ${bg}; color: ${fg}; border-color: ${barColor};">
+                    <div class="header-row">
+                        <span style="font-weight: 500;">${sprint.team}</span>
+                        <span style="font-size: 1.25rem;">${icon}</span>
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="font-size: 0.75rem;">完了率</span>
+                            <span style="font-size: 1.25rem; font-weight: 700;">${pct.toFixed(0)}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${Math.min(pct, 100)}%; background: ${barColor};"></div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 0.75rem; padding-top: 0.5rem; border-top: 1px solid rgba(0,0,0,0.1);">
+                        <div><div style="font-size: 0.75rem;">計画</div><div style="font-weight: 700;">${sprint.total_sp} SP</div></div>
+                        <div><div style="font-size: 0.75rem;">完了</div><div style="font-weight: 700;">${sprint.done_sp} SP</div></div>
+                    </div>
+                    <div style="font-size: 0.75rem; margin-top: 0.5rem; opacity: 0.8;">${sprint.sprint_name}</div>
+                </div>`;
+            }).join('');
+        }
+
+        // Load Leaderboard
+        async function loadLeaderboard() {
+            const data = await fetchAPI('/leaderboard', {
+                period: currentLbPeriod,
+                team: currentTeam === '全チーム' ? null : currentTeam
+            });
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = data.slice(0, 15).map(row => `
+                <tr>
+                    <td>${row.assignee || '-'}</td>
+                    <td>${row.issue_count || 0}</td>
+                    <td>${row.total_sp?.toFixed(1) || 0}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Load Status Breakdown
+        async function loadStatusBreakdown() {
+            const data = await fetchAPI('/status-breakdown', { team: currentTeam === '全チーム' ? null : currentTeam });
+
+            const colors = {
+                '完了': '#259d63',
+                '進行中': '#0031d8',
+                'To Do': '#7f7f7f'
+            };
+
+            if (statusChart) statusChart.destroy();
+            statusChart = new Chart(document.getElementById('status-chart'), {
+                type: 'doughnut',
+                data: {
+                    labels: data.map(d => d.status_category),
+                    datasets: [{
+                        data: data.map(d => d.sp),
+                        backgroundColor: data.map(d => colors[d.status_category] || '#999')
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        }
+
+        // Load Issues
+        async function loadIssues() {
+            const data = await fetchAPI('/issues', { team: currentTeam === '全チーム' ? null : currentTeam, limit: 50 });
+            const tbody = document.getElementById('issues-body');
+            tbody.innerHTML = data.map(row => `
+                <tr>
+                    <td>${row.key || '-'}</td>
+                    <td>${(row.summary || '').substring(0, 40)}...</td>
+                    <td>${row.status || '-'}</td>
+                    <td>${row.team || '-'}</td>
+                    <td>${row.assignee || '-'}</td>
+                    <td>${row.reported_sp || 0}</td>
+                    <td>${row.completed_date !== 'None' ? row.completed_date : '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Load Sufficiency
+        async function loadSufficiency() {
+            const data = await fetchAPI('/sufficiency');
+            const alert = document.getElementById('sufficiency-alert');
+
+            if (!data) {
+                alert.innerHTML = '';
+                return;
+            }
+
+            const pct = data.sufficiency;
+            let className, content;
+            if (pct < 70) {
+                className = 'alert alert-red';
+                content = `<strong>⚠ Sufficiency Alert: ${pct.toFixed(1)}%</strong> — Future SP (${data.future_sp}) / Avg Velocity (${data.avg_velocity.toFixed(1)}). バックログ補充が必要です。`;
+            } else if (pct < 100) {
+                className = 'alert alert-yellow';
+                content = `<strong>Sufficiency: ${pct.toFixed(1)}%</strong> — Future SP (${data.future_sp}) / Avg Velocity (${data.avg_velocity.toFixed(1)})`;
+            } else {
+                className = 'alert alert-green';
+                content = `<strong>Sufficiency: ${pct.toFixed(1)}%</strong> — バックログは健全です。`;
+            }
+            alert.innerHTML = `<div class="${className}">${content}</div>`;
+        }
+
+        // Load Individual Velocity
+        async function loadIndividualVelocity() {
+            const data = await fetchAPI('/individual-velocity', { days: currentDays });
+
+            // Group by assignee
+            const assigneeTotals = {};
+            data.forEach(d => {
+                assigneeTotals[d.assignee] = (assigneeTotals[d.assignee] || 0) + d.done_sp;
+            });
+
+            // Top 10 assignees
+            const topAssignees = Object.entries(assigneeTotals)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10)
+                .map(([a]) => a);
+
+            const weeks = [...new Set(data.map(d => d.week_label))].sort();
+
+            const datasets = topAssignees.map((assignee, i) => ({
+                label: assignee,
+                data: weeks.map(week => {
+                    const item = data.find(d => d.week_label === week && d.assignee === assignee);
+                    return item ? item.done_sp : 0;
+                }),
+                backgroundColor: `hsl(${i * 36}, 70%, 50%)`,
+            }));
+
+            if (individualChart) individualChart.destroy();
+            individualChart = new Chart(document.getElementById('individual-velocity-chart'), {
+                type: 'bar',
+                data: { labels: weeks, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right' } },
+                    scales: {
+                        x: { stacked: false },
+                        y: { beginAtZero: true, title: { display: true, text: '完了SP' } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
