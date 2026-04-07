@@ -50,9 +50,9 @@ st.set_page_config(
 )
 
 # ── Authentication ──────────────────────────────────────────────
-# Password is set via APP_PASSWORD in .env or Streamlit secrets
-if not check_authentication():
-    st.stop()
+# 認証機能は一時的に無効化
+# if not check_authentication():
+#     st.stop()
 
 db.init_db()
 
