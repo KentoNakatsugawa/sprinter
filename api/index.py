@@ -1,4 +1,4 @@
-"""FastAPI backend for JTVO Dashboard - Vercel Serverless Functions."""
+"""FastAPI backend for JTVO Dashboard - Supabase + Vercel."""
 
 from __future__ import annotations
 
@@ -6,14 +6,12 @@ import os
 from datetime import date, timedelta
 from typing import Optional
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-import duckdb
-import pandas as pd
+from supabase import create_client, Client
 
 # Initialize FastAPI
-app = FastAPI(title="JTVO API", version="1.0.0")
+app = FastAPI(title="JTVO API", version="2.0.0")
 
 # CORS for frontend
 app.add_middleware(
@@ -24,32 +22,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Database path - use /tmp for Vercel serverless, local for dev
-from pathlib import Path
-_LOCAL_DB = Path(__file__).resolve().parent.parent / "data" / "jtvo.duckdb"
-DB_PATH = os.environ.get("DB_PATH", str(_LOCAL_DB) if _LOCAL_DB.exists() else "/tmp/jtvo.duckdb")
+# Supabase client
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_ANON_KEY")
 
-# Team SQL expression
-def _team_sql(alias: str = "i") -> str:
-    return f"""CASE
-        WHEN {alias}.board_name = 'AI/Analytics (NLTCS)' THEN 'AI&Analytics'
-        WHEN {alias}.sprint_name LIKE '%ScrumB%' OR {alias}.sprint_name LIKE '%Scrum B%' THEN 'B Scrum'
-        ELSE 'A Scrum'
-    END"""
+def get_supabase() -> Client:
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    return create_client(SUPABASE_URL, SUPABASE_KEY)
 
-TEAM_SQL = _team_sql("i")
-DONE_STATUSES_SQL = "('完了', 'Done', 'Closed', 'Resolved', 'Completed')"
+# Constants
 DASHBOARD_START = date(2025, 12, 8)
+DONE_STATUSES = ['完了', 'Done', 'Closed', 'Resolved', 'Completed']
 
 
-def _connect() -> duckdb.DuckDBPyConnection:
-    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-    return duckdb.connect(DB_PATH)
-
-
-def df_to_dict(df: pd.DataFrame) -> list[dict]:
-    """Convert DataFrame to list of dicts for JSON response."""
-    return df.to_dict(orient="records")
+def get_team(board_name: str, sprint_name: str) -> str:
+    """Derive team from board/sprint names."""
+    if board_name == 'AI/Analytics (NLTCS)':
+        return 'AI&Analytics'
+    if sprint_name and ('ScrumB' in sprint_name or 'Scrum B' in sprint_name):
+        return 'B Scrum'
+    return 'A Scrum'
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -58,84 +51,94 @@ def df_to_dict(df: pd.DataFrame) -> list[dict]:
 
 @app.get("/")
 def root():
-    return {"status": "ok", "message": "JTVO API v1.0.0"}
+    return {"status": "ok", "message": "JTVO API v2.0.0 (Supabase)"}
 
 
 @app.get("/api/health")
 def health():
-    return {"status": "healthy"}
+    try:
+        supabase = get_supabase()
+        result = supabase.table("issues").select("key").limit(1).execute()
+        return {"status": "healthy", "db": "connected"}
+    except Exception as e:
+        return {"status": "unhealthy", "error": str(e)}
 
 
 @app.get("/api/summary")
 def get_summary(
-    team: Optional[str] = Query(None, description="Filter by team"),
-    days: int = Query(0, description="Filter by days (0 = all)")
+    team: Optional[str] = Query(None),
+    days: int = Query(0)
 ):
     """Get overall summary stats."""
-    con = _connect()
-    date_from = DASHBOARD_START
+    supabase = get_supabase()
+
+    date_from = str(DASHBOARD_START)
     if days > 0:
-        date_from = max(date.today() - timedelta(days=days), DASHBOARD_START)
+        date_from = str(max(date.today() - timedelta(days=days), DASHBOARD_START))
 
-    date_filter = f"WHERE i.created >= '{date_from}'"
-    team_filter = ""
+    # Fetch issues
+    query = supabase.table("issues").select("*").gte("created", date_from)
+    result = query.execute()
+    issues = result.data
+
+    # Filter by team if specified
     if team and team != "全チーム":
-        team_filter = f"AND ({TEAM_SQL}) = '{team}'"
+        issues = [i for i in issues if get_team(i.get("board_name", ""), i.get("sprint_name", "")) == team]
 
-    result = con.execute(f"""
-        SELECT
-            COUNT(*) AS total_issues,
-            ROUND(SUM(i.reported_sp), 1) AS total_sp,
-            ROUND(SUM(CASE WHEN i.status_category = '完了' THEN i.reported_sp ELSE 0 END), 1) AS done_sp,
-            ROUND(
-                SUM(CASE WHEN i.status_category = '完了' THEN i.reported_sp ELSE 0 END)
-                / NULLIF(SUM(i.reported_sp), 0) * 100, 1
-            ) AS completion_pct,
-            COUNT(DISTINCT i.assignee) AS member_count
-        FROM issues i
-        {date_filter} {team_filter}
-    """).fetchdf()
-    con.close()
-
-    if result.empty:
+    if not issues:
         return {"total_issues": 0, "total_sp": 0, "done_sp": 0, "completion_pct": 0, "member_count": 0}
 
-    row = result.iloc[0]
+    total_sp = sum(i.get("reported_sp", 0) or 0 for i in issues)
+    done_sp = sum(i.get("reported_sp", 0) or 0 for i in issues if i.get("status_category") == "完了")
+    completion_pct = round(done_sp / total_sp * 100, 1) if total_sp > 0 else 0
+    assignees = set(i.get("assignee") for i in issues if i.get("assignee"))
+
     return {
-        "total_issues": int(row["total_issues"]) if pd.notna(row["total_issues"]) else 0,
-        "total_sp": float(row["total_sp"]) if pd.notna(row["total_sp"]) else 0,
-        "done_sp": float(row["done_sp"]) if pd.notna(row["done_sp"]) else 0,
-        "completion_pct": float(row["completion_pct"]) if pd.notna(row["completion_pct"]) else 0,
-        "member_count": int(row["member_count"]) if pd.notna(row["member_count"]) else 0,
+        "total_issues": len(issues),
+        "total_sp": round(total_sp, 1),
+        "done_sp": round(done_sp, 1),
+        "completion_pct": completion_pct,
+        "member_count": len(assignees),
     }
 
 
 @app.get("/api/team-summary")
 def get_team_summary(days: int = Query(0)):
     """Get per-team summary."""
-    con = _connect()
-    date_from = DASHBOARD_START
-    if days > 0:
-        date_from = max(date.today() - timedelta(days=days), DASHBOARD_START)
+    supabase = get_supabase()
 
-    result = con.execute(f"""
-        SELECT
-            {TEAM_SQL} AS team,
-            COUNT(*) AS total_issues,
-            ROUND(SUM(i.reported_sp), 1) AS total_sp,
-            ROUND(SUM(CASE WHEN i.status_category = '完了' THEN i.reported_sp ELSE 0 END), 1) AS done_sp,
-            ROUND(
-                SUM(CASE WHEN i.status_category = '完了' THEN i.reported_sp ELSE 0 END)
-                / NULLIF(SUM(i.reported_sp), 0) * 100, 1
-            ) AS completion_pct,
-            COUNT(DISTINCT i.assignee) AS member_count
-        FROM issues i
-        WHERE i.created >= '{date_from}'
-        GROUP BY team
-        ORDER BY team
-    """).fetchdf()
-    con.close()
-    return df_to_dict(result)
+    date_from = str(DASHBOARD_START)
+    if days > 0:
+        date_from = str(max(date.today() - timedelta(days=days), DASHBOARD_START))
+
+    result = supabase.table("issues").select("*").gte("created", date_from).execute()
+    issues = result.data
+
+    # Group by team
+    teams = {}
+    for i in issues:
+        team = get_team(i.get("board_name", ""), i.get("sprint_name", ""))
+        if team not in teams:
+            teams[team] = {"issues": [], "assignees": set()}
+        teams[team]["issues"].append(i)
+        if i.get("assignee"):
+            teams[team]["assignees"].add(i["assignee"])
+
+    summary = []
+    for team, data in teams.items():
+        issues_list = data["issues"]
+        total_sp = sum(i.get("reported_sp", 0) or 0 for i in issues_list)
+        done_sp = sum(i.get("reported_sp", 0) or 0 for i in issues_list if i.get("status_category") == "完了")
+        summary.append({
+            "team": team,
+            "total_issues": len(issues_list),
+            "total_sp": round(total_sp, 1),
+            "done_sp": round(done_sp, 1),
+            "completion_pct": round(done_sp / total_sp * 100, 1) if total_sp > 0 else 0,
+            "member_count": len(data["assignees"]),
+        })
+
+    return sorted(summary, key=lambda x: x["team"])
 
 
 @app.get("/api/velocity")
@@ -143,243 +146,291 @@ def get_velocity(
     team: Optional[str] = Query(None),
     days: int = Query(0)
 ):
-    """Get weekly velocity data."""
-    con = _connect()
-    date_from = DASHBOARD_START
+    """Get weekly velocity data based on completion date."""
+    supabase = get_supabase()
+
+    date_from = str(DASHBOARD_START)
     if days > 0:
-        date_from = max(date.today() - timedelta(days=days), DASHBOARD_START)
+        date_from = str(max(date.today() - timedelta(days=days), DASHBOARD_START))
 
-    date_filter = f"AND c.completed_date >= '{date_from}'"
-    team_filter = ""
-    if team and team != "全チーム":
-        team_filter = f"AND ({TEAM_SQL}) = '{team}'"
+    # Get changelog for completion dates
+    changelog = supabase.table("issue_changelog").select("*").eq("field", "status").execute()
+    changelog_data = changelog.data
 
-    result = con.execute(f"""
-        WITH completed AS (
-            SELECT cl.issue_key,
-                   MIN(cl.created)::DATE AS completed_date
-            FROM issue_changelog cl
-            WHERE cl.field = 'status'
-              AND cl.to_string IN {DONE_STATUSES_SQL}
-            GROUP BY cl.issue_key
-        )
-        SELECT
-            DATE_TRUNC('week', c.completed_date)::DATE AS week_start,
-            EXTRACT(ISOYEAR FROM c.completed_date)::INT || '-W'
-                || LPAD(EXTRACT(WEEK FROM c.completed_date)::INT::VARCHAR, 2, '0') AS week_label,
-            {TEAM_SQL} AS team,
-            SUM(i.reported_sp) AS done_sp,
-            COUNT(*) AS issue_count
-        FROM issues i
-        JOIN completed c ON c.issue_key = i.key
-        WHERE i.assignee IS NOT NULL AND i.reported_sp > 0 {date_filter} {team_filter}
-        GROUP BY week_start, week_label, team
-        ORDER BY week_start
-    """).fetchdf()
-    con.close()
+    # Find first completion date for each issue
+    completion_dates = {}
+    for cl in changelog_data:
+        if cl.get("to_string") in DONE_STATUSES:
+            issue_key = cl.get("issue_key")
+            created = cl.get("created")
+            if created:
+                if issue_key not in completion_dates or created < completion_dates[issue_key]:
+                    completion_dates[issue_key] = created
 
-    # Convert dates to string for JSON
-    result["week_start"] = result["week_start"].astype(str)
-    return df_to_dict(result)
+    # Get issues
+    issues = supabase.table("issues").select("*").execute().data
+
+    # Build velocity data
+    from datetime import datetime
+    weekly = {}
+
+    for issue in issues:
+        key = issue.get("key")
+        if key not in completion_dates:
+            continue
+
+        completed_str = completion_dates[key]
+        try:
+            completed = datetime.fromisoformat(completed_str.replace("Z", "+00:00"))
+        except:
+            continue
+
+        if completed.date() < datetime.fromisoformat(date_from).date():
+            continue
+
+        issue_team = get_team(issue.get("board_name", ""), issue.get("sprint_name", ""))
+        if team and team != "全チーム" and issue_team != team:
+            continue
+
+        # Get week start (Monday)
+        week_start = completed.date() - timedelta(days=completed.weekday())
+        week_label = f"{week_start.isocalendar()[0]}-W{week_start.isocalendar()[1]:02d}"
+
+        key_tuple = (str(week_start), week_label, issue_team)
+        if key_tuple not in weekly:
+            weekly[key_tuple] = {"done_sp": 0, "issue_count": 0}
+
+        weekly[key_tuple]["done_sp"] += issue.get("reported_sp", 0) or 0
+        weekly[key_tuple]["issue_count"] += 1
+
+    result = [
+        {
+            "week_start": k[0],
+            "week_label": k[1],
+            "team": k[2],
+            "done_sp": round(v["done_sp"], 1),
+            "issue_count": v["issue_count"]
+        }
+        for k, v in weekly.items()
+    ]
+
+    return sorted(result, key=lambda x: x["week_start"])
 
 
 @app.get("/api/velocity-trend")
 def get_velocity_trend():
-    """Get recent 8-week velocity trend for each team."""
-    con = _connect()
-    result = con.execute(f"""
-        WITH completed AS (
-            SELECT cl.issue_key,
-                   MIN(cl.created)::DATE AS completed_date
-            FROM issue_changelog cl
-            WHERE cl.field = 'status'
-              AND cl.to_string IN {DONE_STATUSES_SQL}
-            GROUP BY cl.issue_key
-        ),
-        weekly AS (
-            SELECT
-                DATE_TRUNC('week', c.completed_date)::DATE AS week_start,
-                {TEAM_SQL} AS team,
-                SUM(i.reported_sp) AS done_sp
-            FROM issues i
-            JOIN completed c ON c.issue_key = i.key
-            WHERE i.assignee IS NOT NULL AND i.reported_sp > 0
-            GROUP BY week_start, team
-        )
-        SELECT * FROM weekly
-        WHERE week_start >= (SELECT MAX(week_start) - INTERVAL '8 weeks' FROM weekly)
-        ORDER BY week_start
-    """).fetchdf()
-    con.close()
-    result["week_start"] = result["week_start"].astype(str)
-    return df_to_dict(result)
+    """Get recent 8-week velocity trend."""
+    velocity = get_velocity(days=60)
+
+    # Get last 8 weeks
+    from datetime import datetime
+    cutoff = date.today() - timedelta(weeks=8)
+
+    return [v for v in velocity if datetime.fromisoformat(v["week_start"]).date() >= cutoff]
 
 
 @app.get("/api/sprint-progress")
 def get_sprint_progress(team: Optional[str] = Query(None)):
     """Get active sprint progress."""
-    con = _connect()
-    team_filter = ""
-    if team and team != "全チーム":
-        team_filter = f"AND ({TEAM_SQL}) = '{team}'"
+    supabase = get_supabase()
 
-    result = con.execute(f"""
-        WITH active AS (
-            SELECT sprint_id, sprint_name, board_name, state
-            FROM synced_sprints
-            WHERE state IN ('active', 'future')
-        )
-        SELECT
-            a.sprint_name,
-            {TEAM_SQL} AS team,
-            a.state,
-            COUNT(*) AS total_issues,
-            SUM(CASE WHEN i.status_category = '完了' THEN 1 ELSE 0 END) AS done_issues,
-            ROUND(SUM(i.reported_sp), 1) AS total_sp,
-            ROUND(SUM(CASE WHEN i.status_category = '完了' THEN i.reported_sp ELSE 0 END), 1) AS done_sp
-        FROM active a
-        JOIN issues i ON i.sprint_id = a.sprint_id
-        WHERE 1=1 {team_filter}
-        GROUP BY a.sprint_name, team, a.state
-        ORDER BY team, a.state DESC
-    """).fetchdf()
-    con.close()
-    return df_to_dict(result)
+    # Get active sprints
+    sprints = supabase.table("synced_sprints").select("*").in_("state", ["active", "future"]).execute()
+
+    # Get issues for each sprint
+    issues = supabase.table("issues").select("*").execute().data
+    issues_by_sprint = {}
+    for i in issues:
+        sid = i.get("sprint_id")
+        if sid:
+            if sid not in issues_by_sprint:
+                issues_by_sprint[sid] = []
+            issues_by_sprint[sid].append(i)
+
+    result = []
+    for sprint in sprints.data:
+        sprint_issues = issues_by_sprint.get(sprint["sprint_id"], [])
+        if not sprint_issues:
+            continue
+
+        # Determine team from first issue
+        first_issue = sprint_issues[0]
+        sprint_team = get_team(first_issue.get("board_name", ""), first_issue.get("sprint_name", ""))
+
+        if team and team != "全チーム" and sprint_team != team:
+            continue
+
+        total_sp = sum(i.get("reported_sp", 0) or 0 for i in sprint_issues)
+        done_sp = sum(i.get("reported_sp", 0) or 0 for i in sprint_issues if i.get("status_category") == "完了")
+
+        result.append({
+            "sprint_name": sprint["sprint_name"],
+            "team": sprint_team,
+            "state": sprint["state"],
+            "total_issues": len(sprint_issues),
+            "done_issues": sum(1 for i in sprint_issues if i.get("status_category") == "完了"),
+            "total_sp": round(total_sp, 1),
+            "done_sp": round(done_sp, 1),
+        })
+
+    return result
 
 
 @app.get("/api/leaderboard")
 def get_leaderboard(
-    period: str = Query("all", description="all, last_week, last_3_weeks"),
+    period: str = Query("all"),
     team: Optional[str] = Query(None)
 ):
     """Get individual leaderboard."""
-    con = _connect()
+    supabase = get_supabase()
 
-    board_filter = ""
-    if team == "A Scrum" or team == "B Scrum":
-        board_filter = "AND i.board_name = 'ICT開発ボード'"
-    elif team == "AI&Analytics":
-        board_filter = "AND i.board_name = 'AI/Analytics (NLTCS)'"
+    # Get completion dates
+    changelog = supabase.table("issue_changelog").select("*").eq("field", "status").execute()
+    completion_dates = {}
+    for cl in changelog.data:
+        if cl.get("to_string") in DONE_STATUSES:
+            issue_key = cl.get("issue_key")
+            created = cl.get("created")
+            if created:
+                if issue_key not in completion_dates or created < completion_dates[issue_key]:
+                    completion_dates[issue_key] = created
+
+    # Get issues
+    issues = supabase.table("issues").select("*").execute().data
+
+    # Filter by period
+    from datetime import datetime
+    now = date.today()
 
     if period == "last_week":
-        result = con.execute(f"""
-            WITH completed AS (
-                SELECT cl.issue_key,
-                       MIN(cl.created)::DATE AS completed_date
-                FROM issue_changelog cl
-                WHERE cl.field = 'status'
-                  AND cl.to_string IN {DONE_STATUSES_SQL}
-                GROUP BY cl.issue_key
-            ),
-            last_week_start AS (
-                SELECT MAX(DATE_TRUNC('week', completed_date))::DATE AS week_start
-                FROM completed
-            )
-            SELECT
-                i.assignee,
-                COUNT(*) AS issue_count,
-                ROUND(SUM(i.reported_sp), 1) AS total_sp
-            FROM issues i
-            JOIN completed c ON c.issue_key = i.key
-            CROSS JOIN last_week_start lw
-            WHERE i.assignee IS NOT NULL
-              AND c.completed_date >= lw.week_start
-              {board_filter}
-            GROUP BY i.assignee
-            ORDER BY total_sp DESC
-        """).fetchdf()
+        # Find the most recent week with data
+        weeks = set()
+        for d in completion_dates.values():
+            try:
+                dt = datetime.fromisoformat(d.replace("Z", "+00:00")).date()
+                week_start = dt - timedelta(days=dt.weekday())
+                weeks.add(week_start)
+            except:
+                pass
+        if weeks:
+            latest_week = max(weeks)
+            date_from = latest_week
+        else:
+            date_from = now - timedelta(days=7)
     elif period == "last_3_weeks":
-        result = con.execute(f"""
-            WITH completed AS (
-                SELECT cl.issue_key,
-                       MIN(cl.created)::DATE AS completed_date
-                FROM issue_changelog cl
-                WHERE cl.field = 'status'
-                  AND cl.to_string IN {DONE_STATUSES_SQL}
-                GROUP BY cl.issue_key
-            ),
-            three_weeks_start AS (
-                SELECT MAX(DATE_TRUNC('week', completed_date))::DATE - INTERVAL '2 weeks' AS week_start
-                FROM completed
-            )
-            SELECT
-                i.assignee,
-                COUNT(*) AS issue_count,
-                ROUND(SUM(i.reported_sp), 1) AS total_sp
-            FROM issues i
-            JOIN completed c ON c.issue_key = i.key
-            CROSS JOIN three_weeks_start tw
-            WHERE i.assignee IS NOT NULL
-              AND c.completed_date >= tw.week_start
-              {board_filter}
-            GROUP BY i.assignee
-            ORDER BY total_sp DESC
-        """).fetchdf()
+        date_from = now - timedelta(weeks=3)
     else:
-        result = con.execute(f"""
-            SELECT
-                i.assignee,
-                COUNT(*) AS issue_count,
-                ROUND(SUM(i.reported_sp), 1) AS total_sp
-            FROM issues i
-            WHERE i.assignee IS NOT NULL
-              AND i.created >= '{DASHBOARD_START}'
-              {board_filter}
-            GROUP BY i.assignee
-            ORDER BY total_sp DESC
-        """).fetchdf()
+        date_from = DASHBOARD_START
 
-    con.close()
-    return df_to_dict(result)
+    # Filter and aggregate
+    assignee_stats = {}
+    for issue in issues:
+        key = issue.get("key")
+        assignee = issue.get("assignee")
+        if not assignee:
+            continue
+
+        # Check completion date
+        if key in completion_dates:
+            try:
+                completed = datetime.fromisoformat(completion_dates[key].replace("Z", "+00:00")).date()
+                if completed < date_from:
+                    continue
+            except:
+                if period != "all":
+                    continue
+        elif period != "all":
+            continue
+
+        # Filter by team
+        if team and team != "全チーム":
+            issue_team = get_team(issue.get("board_name", ""), issue.get("sprint_name", ""))
+            board_filter = None
+            if team in ["A Scrum", "B Scrum"]:
+                board_filter = "ICT開発ボード"
+            elif team == "AI&Analytics":
+                board_filter = "AI/Analytics (NLTCS)"
+            if board_filter and issue.get("board_name") != board_filter:
+                continue
+
+        if assignee not in assignee_stats:
+            assignee_stats[assignee] = {"issue_count": 0, "total_sp": 0}
+        assignee_stats[assignee]["issue_count"] += 1
+        assignee_stats[assignee]["total_sp"] += issue.get("reported_sp", 0) or 0
+
+    result = [
+        {"assignee": a, "issue_count": s["issue_count"], "total_sp": round(s["total_sp"], 1)}
+        for a, s in assignee_stats.items()
+    ]
+
+    return sorted(result, key=lambda x: x["total_sp"], reverse=True)
 
 
 @app.get("/api/status-breakdown")
 def get_status_breakdown(team: Optional[str] = Query(None)):
     """Get status category breakdown."""
-    con = _connect()
-    team_filter = ""
-    if team and team != "全チーム":
-        team_filter = f"AND ({TEAM_SQL}) = '{team}'"
+    supabase = get_supabase()
 
-    result = con.execute(f"""
-        SELECT
-            status_category,
-            COUNT(*) AS count,
-            ROUND(SUM(reported_sp), 1) AS sp
-        FROM issues i
-        WHERE i.created >= '{DASHBOARD_START}' {team_filter}
-        GROUP BY status_category
-        ORDER BY count DESC
-    """).fetchdf()
-    con.close()
-    return df_to_dict(result)
+    issues = supabase.table("issues").select("*").gte("created", str(DASHBOARD_START)).execute().data
+
+    if team and team != "全チーム":
+        issues = [i for i in issues if get_team(i.get("board_name", ""), i.get("sprint_name", "")) == team]
+
+    status_stats = {}
+    for i in issues:
+        cat = i.get("status_category", "Unknown")
+        if cat not in status_stats:
+            status_stats[cat] = {"count": 0, "sp": 0}
+        status_stats[cat]["count"] += 1
+        status_stats[cat]["sp"] += i.get("reported_sp", 0) or 0
+
+    return [
+        {"status_category": s, "count": d["count"], "sp": round(d["sp"], 1)}
+        for s, d in status_stats.items()
+    ]
 
 
 @app.get("/api/assignee-load")
 def get_assignee_load(team: Optional[str] = Query(None)):
-    """Get per-assignee workload."""
-    con = _connect()
-    team_filter = ""
-    if team and team != "全チーム":
-        team_filter = f"AND ({TEAM_SQL}) = '{team}'"
+    """Get per-assignee workload (last 4 weeks)."""
+    supabase = get_supabase()
 
-    result = con.execute(f"""
-        SELECT
-            i.assignee,
-            {TEAM_SQL} AS team,
-            COUNT(*) AS issue_count,
-            ROUND(SUM(i.reported_sp), 1) AS total_sp,
-            SUM(CASE WHEN i.status_category = '完了' THEN 1 ELSE 0 END) AS done_count,
-            SUM(CASE WHEN i.status_category = '進行中' THEN 1 ELSE 0 END) AS in_progress_count
-        FROM issues i
-        WHERE i.assignee IS NOT NULL
-          AND i.created >= (SELECT MAX(created) - INTERVAL '4 weeks' FROM issues)
-          {team_filter}
-        GROUP BY i.assignee, team
-        ORDER BY total_sp DESC
-    """).fetchdf()
-    con.close()
-    return df_to_dict(result)
+    four_weeks_ago = str(date.today() - timedelta(weeks=4))
+    issues = supabase.table("issues").select("*").gte("created", four_weeks_ago).execute().data
+
+    if team and team != "全チーム":
+        issues = [i for i in issues if get_team(i.get("board_name", ""), i.get("sprint_name", "")) == team]
+
+    assignee_stats = {}
+    for i in issues:
+        assignee = i.get("assignee")
+        if not assignee:
+            continue
+
+        issue_team = get_team(i.get("board_name", ""), i.get("sprint_name", ""))
+
+        key = (assignee, issue_team)
+        if key not in assignee_stats:
+            assignee_stats[key] = {"issue_count": 0, "total_sp": 0, "done_count": 0, "in_progress_count": 0}
+
+        assignee_stats[key]["issue_count"] += 1
+        assignee_stats[key]["total_sp"] += i.get("reported_sp", 0) or 0
+        if i.get("status_category") == "完了":
+            assignee_stats[key]["done_count"] += 1
+        elif i.get("status_category") == "進行中":
+            assignee_stats[key]["in_progress_count"] += 1
+
+    return [
+        {
+            "assignee": k[0],
+            "team": k[1],
+            "issue_count": s["issue_count"],
+            "total_sp": round(s["total_sp"], 1),
+            "done_count": s["done_count"],
+            "in_progress_count": s["in_progress_count"],
+        }
+        for k, s in assignee_stats.items()
+    ]
 
 
 @app.get("/api/issues")
@@ -388,141 +439,191 @@ def get_issues(
     limit: int = Query(100)
 ):
     """Get issues list."""
-    con = _connect()
-    team_filter = ""
+    supabase = get_supabase()
+
+    # Get completion dates
+    changelog = supabase.table("issue_changelog").select("*").eq("field", "status").execute()
+    completion_dates = {}
+    for cl in changelog.data:
+        if cl.get("to_string") in DONE_STATUSES:
+            issue_key = cl.get("issue_key")
+            created = cl.get("created")
+            if created:
+                if issue_key not in completion_dates or created < completion_dates[issue_key]:
+                    completion_dates[issue_key] = created
+
+    issues = supabase.table("issues").select("*").gte("created", str(DASHBOARD_START)).order("created", desc=True).limit(limit).execute().data
+
     if team and team != "全チーム":
-        team_filter = f"AND ({TEAM_SQL}) = '{team}'"
+        issues = [i for i in issues if get_team(i.get("board_name", ""), i.get("sprint_name", "")) == team]
 
-    result = con.execute(f"""
-        SELECT
-            i.key, i.summary, i.status, i.status_category,
-            i.priority, i.assignee, i.sprint_name,
-            {TEAM_SQL} AS team,
-            i.reported_sp,
-            i.created::DATE AS created_date,
-            EXTRACT(ISOYEAR FROM i.created)::INT || '-W' || LPAD(EXTRACT(WEEK FROM i.created)::INT::VARCHAR, 2, '0') AS week_label,
-            (SELECT MAX(cl.created)::DATE FROM issue_changelog cl
-             WHERE cl.issue_key = i.key AND cl.field = 'status'
-               AND cl.to_string IN {DONE_STATUSES_SQL}
-            ) AS completed_date,
-            i.updated
-        FROM issues i
-        WHERE i.created >= '{DASHBOARD_START}' {team_filter}
-        ORDER BY i.created DESC
-        LIMIT {limit}
-    """).fetchdf()
-    con.close()
+    result = []
+    for i in issues:
+        created = i.get("created", "")[:10] if i.get("created") else ""
+        completed = completion_dates.get(i["key"], "")
+        if completed:
+            completed = completed[:10]
 
-    # Convert dates to string
-    for col in ["created_date", "completed_date", "updated"]:
-        if col in result.columns:
-            result[col] = result[col].astype(str)
+        result.append({
+            "key": i.get("key"),
+            "summary": i.get("summary"),
+            "status": i.get("status"),
+            "status_category": i.get("status_category"),
+            "priority": i.get("priority"),
+            "assignee": i.get("assignee"),
+            "sprint_name": i.get("sprint_name"),
+            "team": get_team(i.get("board_name", ""), i.get("sprint_name", "")),
+            "reported_sp": i.get("reported_sp"),
+            "created_date": created,
+            "completed_date": completed,
+        })
 
-    return df_to_dict(result)
-
-
-@app.get("/api/sprint-achievement")
-def get_sprint_achievement(team: Optional[str] = Query(None)):
-    """Get sprint achievement metrics."""
-    con = _connect()
-    team_filter = ""
-    if team and team != "全チーム":
-        team_filter = f"AND ({_team_sql('i')}) = '{team}'"
-
-    result = con.execute(f"""
-        WITH sprint_data AS (
-            SELECT
-                si.sprint_name,
-                {_team_sql('i')} AS team,
-                i.key,
-                i.reported_sp,
-                i.status_category,
-                (SELECT COUNT(*) FROM sprint_issues si2
-                 WHERE si2.issue_key = si.issue_key
-                   AND si2.sprint_name != si.sprint_name) AS other_sprint_count
-            FROM sprint_issues si
-            JOIN issues i ON si.issue_key = i.key
-            WHERE i.reported_sp > 0
-              {team_filter}
-        )
-        SELECT
-            sprint_name,
-            team,
-            COUNT(*) AS total_issues,
-            ROUND(SUM(reported_sp), 1) AS planned_sp,
-            ROUND(SUM(CASE WHEN status_category = '完了' THEN reported_sp ELSE 0 END), 1) AS done_sp,
-            ROUND(SUM(CASE WHEN other_sprint_count > 0 AND status_category != '完了'
-                       THEN reported_sp ELSE 0 END), 1) AS carryover_sp,
-            SUM(CASE WHEN other_sprint_count > 0 AND status_category != '完了'
-                THEN 1 ELSE 0 END) AS carryover_count,
-            ROUND(
-                SUM(CASE WHEN status_category = '完了' THEN reported_sp ELSE 0 END)
-                / NULLIF(SUM(reported_sp), 0) * 100, 1
-            ) AS achievement_pct
-        FROM sprint_data
-        GROUP BY sprint_name, team
-        HAVING SUM(reported_sp) > 0
-        ORDER BY sprint_name
-    """).fetchdf()
-    con.close()
-    return df_to_dict(result)
+    return result[:limit]
 
 
 @app.get("/api/sufficiency")
 def get_sufficiency():
     """Get sufficiency alert data."""
-    con = _connect()
-    result = con.execute("""
-        SELECT * FROM sufficiency_snapshots
-        ORDER BY snapshot_date DESC LIMIT 1
-    """).fetchdf()
-    con.close()
+    supabase = get_supabase()
 
-    if result.empty:
+    result = supabase.table("sufficiency_snapshots").select("*").order("snapshot_date", desc=True).limit(1).execute()
+
+    if not result.data:
         return None
 
-    row = result.iloc[0]
+    row = result.data[0]
     return {
-        "snapshot_date": str(row["snapshot_date"]),
-        "future_sp": float(row["future_sp"]) if pd.notna(row["future_sp"]) else 0,
-        "avg_velocity": float(row["avg_velocity"]) if pd.notna(row["avg_velocity"]) else 0,
-        "sufficiency": float(row["sufficiency"]) if pd.notna(row["sufficiency"]) else 0,
+        "snapshot_date": row.get("snapshot_date"),
+        "future_sp": row.get("future_sp", 0),
+        "avg_velocity": row.get("avg_velocity", 0),
+        "sufficiency": row.get("sufficiency", 0),
     }
 
 
 @app.get("/api/individual-velocity")
 def get_individual_velocity(days: int = Query(0)):
     """Get individual velocity per week."""
-    con = _connect()
-    date_from = DASHBOARD_START
+    supabase = get_supabase()
+
+    date_from = str(DASHBOARD_START)
     if days > 0:
-        date_from = max(date.today() - timedelta(days=days), DASHBOARD_START)
+        date_from = str(max(date.today() - timedelta(days=days), DASHBOARD_START))
 
-    result = con.execute(f"""
-        WITH completed AS (
-            SELECT cl.issue_key,
-                   MIN(cl.created)::DATE AS completed_date
-            FROM issue_changelog cl
-            WHERE cl.field = 'status'
-              AND cl.to_string IN {DONE_STATUSES_SQL}
-            GROUP BY cl.issue_key
-        )
-        SELECT
-            DATE_TRUNC('week', c.completed_date)::DATE AS week_start,
-            EXTRACT(ISOYEAR FROM c.completed_date)::INT || '-W'
-                || LPAD(EXTRACT(WEEK FROM c.completed_date)::INT::VARCHAR, 2, '0') AS week_label,
-            i.assignee,
-            {TEAM_SQL} AS team,
-            SUM(i.reported_sp) AS done_sp,
-            COUNT(*) AS issue_count
-        FROM issues i
-        JOIN completed c ON c.issue_key = i.key
-        WHERE i.assignee IS NOT NULL AND i.reported_sp > 0
-          AND c.completed_date >= '{date_from}'
-        GROUP BY week_start, week_label, i.assignee, team
-        ORDER BY week_start, i.assignee, team
-    """).fetchdf()
-    con.close()
+    # Get completion dates
+    changelog = supabase.table("issue_changelog").select("*").eq("field", "status").execute()
+    completion_dates = {}
+    for cl in changelog.data:
+        if cl.get("to_string") in DONE_STATUSES:
+            issue_key = cl.get("issue_key")
+            created = cl.get("created")
+            if created:
+                if issue_key not in completion_dates or created < completion_dates[issue_key]:
+                    completion_dates[issue_key] = created
 
-    result["week_start"] = result["week_start"].astype(str)
-    return df_to_dict(result)
+    issues = supabase.table("issues").select("*").execute().data
+
+    from datetime import datetime
+    weekly = {}
+
+    for issue in issues:
+        key = issue.get("key")
+        assignee = issue.get("assignee")
+        if not assignee or key not in completion_dates:
+            continue
+
+        completed_str = completion_dates[key]
+        try:
+            completed = datetime.fromisoformat(completed_str.replace("Z", "+00:00"))
+        except:
+            continue
+
+        if completed.date() < datetime.fromisoformat(date_from).date():
+            continue
+
+        issue_team = get_team(issue.get("board_name", ""), issue.get("sprint_name", ""))
+        week_start = completed.date() - timedelta(days=completed.weekday())
+        week_label = f"{week_start.isocalendar()[0]}-W{week_start.isocalendar()[1]:02d}"
+
+        key_tuple = (str(week_start), week_label, assignee, issue_team)
+        if key_tuple not in weekly:
+            weekly[key_tuple] = {"done_sp": 0, "issue_count": 0}
+
+        weekly[key_tuple]["done_sp"] += issue.get("reported_sp", 0) or 0
+        weekly[key_tuple]["issue_count"] += 1
+
+    result = [
+        {
+            "week_start": k[0],
+            "week_label": k[1],
+            "assignee": k[2],
+            "team": k[3],
+            "done_sp": round(v["done_sp"], 1),
+            "issue_count": v["issue_count"]
+        }
+        for k, v in weekly.items()
+    ]
+
+    return sorted(result, key=lambda x: (x["week_start"], x["assignee"]))
+
+
+@app.get("/api/sprint-achievement")
+def get_sprint_achievement(team: Optional[str] = Query(None)):
+    """Get sprint achievement metrics."""
+    supabase = get_supabase()
+
+    # Get sprint issues mapping
+    sprint_issues = supabase.table("sprint_issues").select("*").execute().data
+
+    # Get issues
+    issues = supabase.table("issues").select("*").execute().data
+    issues_by_key = {i["key"]: i for i in issues}
+
+    # Count sprints per issue
+    issue_sprint_count = {}
+    for si in sprint_issues:
+        key = si["issue_key"]
+        issue_sprint_count[key] = issue_sprint_count.get(key, 0) + 1
+
+    # Group by sprint
+    sprint_data = {}
+    for si in sprint_issues:
+        sprint_name = si["sprint_name"]
+        issue_key = si["issue_key"]
+        issue = issues_by_key.get(issue_key)
+        if not issue or not issue.get("reported_sp"):
+            continue
+
+        issue_team = get_team(issue.get("board_name", ""), issue.get("sprint_name", ""))
+        if team and team != "全チーム" and issue_team != team:
+            continue
+
+        key = (sprint_name, issue_team)
+        if key not in sprint_data:
+            sprint_data[key] = {
+                "planned_sp": 0, "done_sp": 0, "carryover_sp": 0,
+                "total_issues": 0, "carryover_count": 0
+            }
+
+        sp = issue.get("reported_sp", 0) or 0
+        sprint_data[key]["planned_sp"] += sp
+        sprint_data[key]["total_issues"] += 1
+
+        if issue.get("status_category") == "完了":
+            sprint_data[key]["done_sp"] += sp
+        elif issue_sprint_count.get(issue_key, 0) > 1:
+            sprint_data[key]["carryover_sp"] += sp
+            sprint_data[key]["carryover_count"] += 1
+
+    return [
+        {
+            "sprint_name": k[0],
+            "team": k[1],
+            "total_issues": d["total_issues"],
+            "planned_sp": round(d["planned_sp"], 1),
+            "done_sp": round(d["done_sp"], 1),
+            "carryover_sp": round(d["carryover_sp"], 1),
+            "carryover_count": d["carryover_count"],
+            "achievement_pct": round(d["done_sp"] / d["planned_sp"] * 100, 1) if d["planned_sp"] > 0 else 0,
+        }
+        for k, d in sprint_data.items()
+    ]
