@@ -26,13 +26,6 @@
     {
       "week_start": "2025-12-15 00:00:00",
       "week_label": "2025-W51",
-      "team": "B Scrum",
-      "done_sp": 20.5,
-      "issue_count": 14
-    },
-    {
-      "week_start": "2025-12-15 00:00:00",
-      "week_label": "2025-W51",
       "team": "AI&Analytics",
       "done_sp": 28.0,
       "issue_count": 9
@@ -40,9 +33,23 @@
     {
       "week_start": "2025-12-15 00:00:00",
       "week_label": "2025-W51",
+      "team": "B Scrum",
+      "done_sp": 20.5,
+      "issue_count": 14
+    },
+    {
+      "week_start": "2025-12-15 00:00:00",
+      "week_label": "2025-W51",
       "team": "A Scrum",
       "done_sp": 34.5,
       "issue_count": 22
+    },
+    {
+      "week_start": "2025-12-22 00:00:00",
+      "week_label": "2025-W52",
+      "team": "AI&Analytics",
+      "done_sp": 41.0,
+      "issue_count": 13
     },
     {
       "week_start": "2025-12-22 00:00:00",
@@ -59,25 +66,11 @@
       "issue_count": 8
     },
     {
-      "week_start": "2025-12-22 00:00:00",
-      "week_label": "2025-W52",
-      "team": "AI&Analytics",
-      "done_sp": 41.0,
-      "issue_count": 13
-    },
-    {
       "week_start": "2025-12-29 00:00:00",
       "week_label": "2026-W01",
       "team": "A Scrum",
       "done_sp": 4.0,
       "issue_count": 3
-    },
-    {
-      "week_start": "2026-01-05 00:00:00",
-      "week_label": "2026-W02",
-      "team": "AI&Analytics",
-      "done_sp": 17.0,
-      "issue_count": 7
     },
     {
       "week_start": "2026-01-05 00:00:00",
@@ -89,6 +82,13 @@
     {
       "week_start": "2026-01-05 00:00:00",
       "week_label": "2026-W02",
+      "team": "AI&Analytics",
+      "done_sp": 17.0,
+      "issue_count": 7
+    },
+    {
+      "week_start": "2026-01-05 00:00:00",
+      "week_label": "2026-W02",
       "team": "B Scrum",
       "done_sp": 38.5,
       "issue_count": 24
@@ -96,9 +96,9 @@
     {
       "week_start": "2026-01-12 00:00:00",
       "week_label": "2026-W03",
-      "team": "A Scrum",
-      "done_sp": 27.0,
-      "issue_count": 19
+      "team": "B Scrum",
+      "done_sp": 12.0,
+      "issue_count": 9
     },
     {
       "week_start": "2026-01-12 00:00:00",
@@ -110,9 +110,9 @@
     {
       "week_start": "2026-01-12 00:00:00",
       "week_label": "2026-W03",
-      "team": "B Scrum",
-      "done_sp": 12.0,
-      "issue_count": 9
+      "team": "A Scrum",
+      "done_sp": 27.0,
+      "issue_count": 19
     },
     {
       "week_start": "2026-01-19 00:00:00",
@@ -124,16 +124,16 @@
     {
       "week_start": "2026-01-19 00:00:00",
       "week_label": "2026-W04",
-      "team": "AI&Analytics",
-      "done_sp": 18.0,
-      "issue_count": 6
+      "team": "B Scrum",
+      "done_sp": 26.5,
+      "issue_count": 18
     },
     {
       "week_start": "2026-01-19 00:00:00",
       "week_label": "2026-W04",
-      "team": "B Scrum",
-      "done_sp": 26.5,
-      "issue_count": 18
+      "team": "AI&Analytics",
+      "done_sp": 18.0,
+      "issue_count": 6
     },
     {
       "week_start": "2026-01-26 00:00:00",
@@ -145,16 +145,23 @@
     {
       "week_start": "2026-01-26 00:00:00",
       "week_label": "2026-W05",
+      "team": "B Scrum",
+      "done_sp": 32.0,
+      "issue_count": 15
+    },
+    {
+      "week_start": "2026-01-26 00:00:00",
+      "week_label": "2026-W05",
       "team": "A Scrum",
       "done_sp": 22.5,
       "issue_count": 16
     },
     {
-      "week_start": "2026-01-26 00:00:00",
-      "week_label": "2026-W05",
-      "team": "B Scrum",
-      "done_sp": 32.0,
-      "issue_count": 15
+      "week_start": "2026-02-02 00:00:00",
+      "week_label": "2026-W06",
+      "team": "AI&Analytics",
+      "done_sp": 50.0,
+      "issue_count": 23
     },
     {
       "week_start": "2026-02-02 00:00:00",
@@ -171,11 +178,11 @@
       "issue_count": 29
     },
     {
-      "week_start": "2026-02-02 00:00:00",
-      "week_label": "2026-W06",
-      "team": "AI&Analytics",
-      "done_sp": 50.0,
-      "issue_count": 23
+      "week_start": "2026-02-09 00:00:00",
+      "week_label": "2026-W07",
+      "team": "B Scrum",
+      "done_sp": 32.5,
+      "issue_count": 16
     },
     {
       "week_start": "2026-02-09 00:00:00",
@@ -190,13 +197,6 @@
       "team": "AI&Analytics",
       "done_sp": 47.0,
       "issue_count": 26
-    },
-    {
-      "week_start": "2026-02-09 00:00:00",
-      "week_label": "2026-W07",
-      "team": "B Scrum",
-      "done_sp": 32.5,
-      "issue_count": 16
     }
   ],
   "teamSummary": [
@@ -228,6 +228,11 @@
   "recentTrend": [
     {
       "week_start": "2025-12-15 00:00:00",
+      "team": "AI&Analytics",
+      "done_sp": 28.0
+    },
+    {
+      "week_start": "2025-12-15 00:00:00",
       "team": "B Scrum",
       "done_sp": 20.5
     },
@@ -237,9 +242,9 @@
       "done_sp": 34.5
     },
     {
-      "week_start": "2025-12-15 00:00:00",
+      "week_start": "2025-12-22 00:00:00",
       "team": "AI&Analytics",
-      "done_sp": 28.0
+      "done_sp": 41.0
     },
     {
       "week_start": "2025-12-22 00:00:00",
@@ -252,19 +257,9 @@
       "done_sp": 10.0
     },
     {
-      "week_start": "2025-12-22 00:00:00",
-      "team": "AI&Analytics",
-      "done_sp": 41.0
-    },
-    {
       "week_start": "2025-12-29 00:00:00",
       "team": "A Scrum",
       "done_sp": 4.0
-    },
-    {
-      "week_start": "2026-01-05 00:00:00",
-      "team": "A Scrum",
-      "done_sp": 11.0
     },
     {
       "week_start": "2026-01-05 00:00:00",
@@ -277,6 +272,16 @@
       "done_sp": 17.0
     },
     {
+      "week_start": "2026-01-05 00:00:00",
+      "team": "A Scrum",
+      "done_sp": 11.0
+    },
+    {
+      "week_start": "2026-01-12 00:00:00",
+      "team": "AI&Analytics",
+      "done_sp": 59.0
+    },
+    {
       "week_start": "2026-01-12 00:00:00",
       "team": "B Scrum",
       "done_sp": 12.0
@@ -287,14 +292,14 @@
       "done_sp": 27.0
     },
     {
-      "week_start": "2026-01-12 00:00:00",
-      "team": "AI&Analytics",
-      "done_sp": 59.0
-    },
-    {
       "week_start": "2026-01-19 00:00:00",
       "team": "B Scrum",
       "done_sp": 26.5
+    },
+    {
+      "week_start": "2026-01-19 00:00:00",
+      "team": "A Scrum",
+      "done_sp": 22.5
     },
     {
       "week_start": "2026-01-19 00:00:00",
@@ -302,9 +307,9 @@
       "done_sp": 18.0
     },
     {
-      "week_start": "2026-01-19 00:00:00",
-      "team": "A Scrum",
-      "done_sp": 22.5
+      "week_start": "2026-01-26 00:00:00",
+      "team": "B Scrum",
+      "done_sp": 32.0
     },
     {
       "week_start": "2026-01-26 00:00:00",
@@ -317,14 +322,9 @@
       "done_sp": 58.0
     },
     {
-      "week_start": "2026-01-26 00:00:00",
-      "team": "B Scrum",
-      "done_sp": 32.0
-    },
-    {
       "week_start": "2026-02-02 00:00:00",
-      "team": "AI&Analytics",
-      "done_sp": 50.0
+      "team": "A Scrum",
+      "done_sp": 29.0
     },
     {
       "week_start": "2026-02-02 00:00:00",
@@ -333,8 +333,8 @@
     },
     {
       "week_start": "2026-02-02 00:00:00",
-      "team": "A Scrum",
-      "done_sp": 29.0
+      "team": "AI&Analytics",
+      "done_sp": 50.0
     },
     {
       "week_start": "2026-02-09 00:00:00",
@@ -1583,16 +1583,6 @@
     },
     {
       "sprint_name": "Scrum B Enabler / Z tech 1",
-      "team": "A Scrum",
-      "total_issues": 42,
-      "planned_sp": 54.5,
-      "done_sp": 50.5,
-      "carryover_sp": 4.0,
-      "carryover_count": 2.0,
-      "achievement_pct": 92.7
-    },
-    {
-      "sprint_name": "Scrum B Enabler / Z tech 1",
       "team": "B Scrum",
       "total_issues": 24,
       "planned_sp": 34.0,
@@ -1600,6 +1590,16 @@
       "carryover_sp": 0.0,
       "carryover_count": 0.0,
       "achievement_pct": 100.0
+    },
+    {
+      "sprint_name": "Scrum B Enabler / Z tech 1",
+      "team": "A Scrum",
+      "total_issues": 42,
+      "planned_sp": 54.5,
+      "done_sp": 50.5,
+      "carryover_sp": 4.0,
+      "carryover_count": 2.0,
+      "achievement_pct": 92.7
     },
     {
       "sprint_name": "Scrum B Enabler / Z tech 2",
@@ -1623,16 +1623,6 @@
     },
     {
       "sprint_name": "ScrumB Enabler / Z tech 2",
-      "team": "B Scrum",
-      "total_issues": 18,
-      "planned_sp": 33.0,
-      "done_sp": 30.0,
-      "carryover_sp": 3.0,
-      "carryover_count": 1.0,
-      "achievement_pct": 90.9
-    },
-    {
-      "sprint_name": "ScrumB Enabler / Z tech 2",
       "team": "A Scrum",
       "total_issues": 3,
       "planned_sp": 7.0,
@@ -1640,6 +1630,16 @@
       "carryover_sp": 4.0,
       "carryover_count": 2.0,
       "achievement_pct": 42.9
+    },
+    {
+      "sprint_name": "ScrumB Enabler / Z tech 2",
+      "team": "B Scrum",
+      "total_issues": 18,
+      "planned_sp": 33.0,
+      "done_sp": 30.0,
+      "carryover_sp": 3.0,
+      "carryover_count": 1.0,
+      "achievement_pct": 90.9
     },
     {
       "sprint_name": "ScrumB Enabler / Z tech 3 Tech",
@@ -1653,16 +1653,6 @@
     },
     {
       "sprint_name": "ScrumB Enabler / Z tech 3 開発改善",
-      "team": "A Scrum",
-      "total_issues": 1,
-      "planned_sp": 3.0,
-      "done_sp": 3.0,
-      "carryover_sp": 0.0,
-      "carryover_count": 0.0,
-      "achievement_pct": 100.0
-    },
-    {
-      "sprint_name": "ScrumB Enabler / Z tech 3 開発改善",
       "team": "B Scrum",
       "total_issues": 18,
       "planned_sp": 27.0,
@@ -1670,6 +1660,16 @@
       "carryover_sp": 1.0,
       "carryover_count": 1.0,
       "achievement_pct": 96.3
+    },
+    {
+      "sprint_name": "ScrumB Enabler / Z tech 3 開発改善",
+      "team": "A Scrum",
+      "total_issues": 1,
+      "planned_sp": 3.0,
+      "done_sp": 3.0,
+      "carryover_sp": 0.0,
+      "carryover_count": 0.0,
+      "achievement_pct": 100.0
     },
     {
       "sprint_name": "ScrumB Enabler / Z tech 4",
@@ -1693,16 +1693,6 @@
     },
     {
       "sprint_name": "ScrumB Enabler / Z tech 5",
-      "team": "A Scrum",
-      "total_issues": 3,
-      "planned_sp": 7.0,
-      "done_sp": 3.0,
-      "carryover_sp": 4.0,
-      "carryover_count": 2.0,
-      "achievement_pct": 42.9
-    },
-    {
-      "sprint_name": "ScrumB Enabler / Z tech 5",
       "team": "B Scrum",
       "total_issues": 35,
       "planned_sp": 48.0,
@@ -1712,7 +1702,7 @@
       "achievement_pct": 87.5
     },
     {
-      "sprint_name": "ScrumB Enabler / Z tech 6",
+      "sprint_name": "ScrumB Enabler / Z tech 5",
       "team": "A Scrum",
       "total_issues": 3,
       "planned_sp": 7.0,
@@ -1732,14 +1722,14 @@
       "achievement_pct": 84.3
     },
     {
-      "sprint_name": "ScrumB Enabler / Z tech 7",
+      "sprint_name": "ScrumB Enabler / Z tech 6",
       "team": "A Scrum",
-      "total_issues": 2,
-      "planned_sp": 6.0,
+      "total_issues": 3,
+      "planned_sp": 7.0,
       "done_sp": 3.0,
-      "carryover_sp": 3.0,
-      "carryover_count": 1.0,
-      "achievement_pct": 50.0
+      "carryover_sp": 4.0,
+      "carryover_count": 2.0,
+      "achievement_pct": 42.9
     },
     {
       "sprint_name": "ScrumB Enabler / Z tech 7",
@@ -1752,7 +1742,7 @@
       "achievement_pct": 79.2
     },
     {
-      "sprint_name": "ScrumB Enabler / Z tech 8",
+      "sprint_name": "ScrumB Enabler / Z tech 7",
       "team": "A Scrum",
       "total_issues": 2,
       "planned_sp": 6.0,
@@ -1772,14 +1762,14 @@
       "achievement_pct": 66.9
     },
     {
-      "sprint_name": "ScrumB Enabler / Z tech 9",
-      "team": "B Scrum",
-      "total_issues": 27,
-      "planned_sp": 54.0,
-      "done_sp": 29.5,
-      "carryover_sp": 24.5,
-      "carryover_count": 12.0,
-      "achievement_pct": 54.6
+      "sprint_name": "ScrumB Enabler / Z tech 8",
+      "team": "A Scrum",
+      "total_issues": 2,
+      "planned_sp": 6.0,
+      "done_sp": 3.0,
+      "carryover_sp": 3.0,
+      "carryover_count": 1.0,
+      "achievement_pct": 50.0
     },
     {
       "sprint_name": "ScrumB Enabler / Z tech 9",
@@ -1790,6 +1780,16 @@
       "carryover_sp": 3.0,
       "carryover_count": 1.0,
       "achievement_pct": 50.0
+    },
+    {
+      "sprint_name": "ScrumB Enabler / Z tech 9",
+      "team": "B Scrum",
+      "total_issues": 27,
+      "planned_sp": 54.0,
+      "done_sp": 29.5,
+      "carryover_sp": 24.5,
+      "carryover_count": 12.0,
+      "achievement_pct": 54.6
     },
     {
       "sprint_name": "Sprint 10",
@@ -3275,19 +3275,19 @@
     },
     {
       "week_start": "2025-11-03 00:00:00",
-      "team": "A Scrum",
-      "planned_sp": 68.5,
-      "done_sp": 58.5,
-      "carryover_sp": 10.0,
-      "achievement_pct": 85.4
-    },
-    {
-      "week_start": "2025-11-03 00:00:00",
       "team": "AI&Analytics",
       "planned_sp": 18.0,
       "done_sp": 12.0,
       "carryover_sp": 6.0,
       "achievement_pct": 66.7
+    },
+    {
+      "week_start": "2025-11-03 00:00:00",
+      "team": "A Scrum",
+      "planned_sp": 68.5,
+      "done_sp": 58.5,
+      "carryover_sp": 10.0,
+      "achievement_pct": 85.4
     },
     {
       "week_start": "2025-11-10 00:00:00",
@@ -3355,19 +3355,19 @@
     },
     {
       "week_start": "2025-12-08 00:00:00",
-      "team": "A Scrum",
-      "planned_sp": 176.5,
-      "done_sp": 162.5,
-      "carryover_sp": 14.0,
-      "achievement_pct": 92.1
-    },
-    {
-      "week_start": "2025-12-08 00:00:00",
       "team": "B Scrum",
       "planned_sp": 62.5,
       "done_sp": 62.5,
       "carryover_sp": 0.0,
       "achievement_pct": 100.0
+    },
+    {
+      "week_start": "2025-12-08 00:00:00",
+      "team": "A Scrum",
+      "planned_sp": 176.5,
+      "done_sp": 162.5,
+      "carryover_sp": 14.0,
+      "achievement_pct": 92.1
     },
     {
       "week_start": "2025-12-08 00:00:00",
@@ -3379,19 +3379,19 @@
     },
     {
       "week_start": "2025-12-15 00:00:00",
-      "team": "B Scrum",
-      "planned_sp": 40.5,
-      "done_sp": 36.5,
-      "carryover_sp": 4.0,
-      "achievement_pct": 90.1
-    },
-    {
-      "week_start": "2025-12-15 00:00:00",
       "team": "AI&Analytics",
       "planned_sp": 32.0,
       "done_sp": 15.0,
       "carryover_sp": 17.0,
       "achievement_pct": 46.9
+    },
+    {
+      "week_start": "2025-12-15 00:00:00",
+      "team": "B Scrum",
+      "planned_sp": 40.5,
+      "done_sp": 36.5,
+      "carryover_sp": 4.0,
+      "achievement_pct": 90.1
     },
     {
       "week_start": "2025-12-15 00:00:00",
@@ -3403,11 +3403,11 @@
     },
     {
       "week_start": "2025-12-22 00:00:00",
-      "team": "AI&Analytics",
-      "planned_sp": 224.0,
-      "done_sp": 104.0,
-      "carryover_sp": 120.0,
-      "achievement_pct": 46.4
+      "team": "B Scrum",
+      "planned_sp": 27.0,
+      "done_sp": 26.0,
+      "carryover_sp": 1.0,
+      "achievement_pct": 96.3
     },
     {
       "week_start": "2025-12-22 00:00:00",
@@ -3419,19 +3419,11 @@
     },
     {
       "week_start": "2025-12-22 00:00:00",
-      "team": "B Scrum",
-      "planned_sp": 27.0,
-      "done_sp": 26.0,
-      "carryover_sp": 1.0,
-      "achievement_pct": 96.3
-    },
-    {
-      "week_start": "2026-01-05 00:00:00",
-      "team": "A Scrum",
-      "planned_sp": 18.5,
-      "done_sp": 14.5,
-      "carryover_sp": 4.0,
-      "achievement_pct": 78.4
+      "team": "AI&Analytics",
+      "planned_sp": 224.0,
+      "done_sp": 104.0,
+      "carryover_sp": 120.0,
+      "achievement_pct": 46.4
     },
     {
       "week_start": "2026-01-05 00:00:00",
@@ -3440,6 +3432,14 @@
       "done_sp": 63.0,
       "carryover_sp": 6.0,
       "achievement_pct": 91.3
+    },
+    {
+      "week_start": "2026-01-05 00:00:00",
+      "team": "A Scrum",
+      "planned_sp": 18.5,
+      "done_sp": 14.5,
+      "carryover_sp": 4.0,
+      "achievement_pct": 78.4
     },
     {
       "week_start": "2026-01-05 00:00:00",
@@ -3459,6 +3459,14 @@
     },
     {
       "week_start": "2026-01-12 00:00:00",
+      "team": "AI&Analytics",
+      "planned_sp": 184.0,
+      "done_sp": 113.0,
+      "carryover_sp": 71.0,
+      "achievement_pct": 61.4
+    },
+    {
+      "week_start": "2026-01-12 00:00:00",
       "team": "B Scrum",
       "planned_sp": 48.0,
       "done_sp": 42.0,
@@ -3466,12 +3474,12 @@
       "achievement_pct": 87.5
     },
     {
-      "week_start": "2026-01-12 00:00:00",
+      "week_start": "2026-01-19 00:00:00",
       "team": "AI&Analytics",
-      "planned_sp": 184.0,
-      "done_sp": 113.0,
-      "carryover_sp": 71.0,
-      "achievement_pct": 61.4
+      "planned_sp": 231.0,
+      "done_sp": 153.0,
+      "carryover_sp": 78.0,
+      "achievement_pct": 66.2
     },
     {
       "week_start": "2026-01-19 00:00:00",
@@ -3490,20 +3498,12 @@
       "achievement_pct": 94.6
     },
     {
-      "week_start": "2026-01-19 00:00:00",
-      "team": "AI&Analytics",
-      "planned_sp": 231.0,
-      "done_sp": 153.0,
-      "carryover_sp": 78.0,
-      "achievement_pct": 66.2
-    },
-    {
       "week_start": "2026-01-26 00:00:00",
-      "team": "B Scrum",
-      "planned_sp": 74.5,
-      "done_sp": 59.0,
-      "carryover_sp": 15.5,
-      "achievement_pct": 79.2
+      "team": "A Scrum",
+      "planned_sp": 53.0,
+      "done_sp": 53.0,
+      "carryover_sp": 0.0,
+      "achievement_pct": 100.0
     },
     {
       "week_start": "2026-01-26 00:00:00",
@@ -3515,19 +3515,11 @@
     },
     {
       "week_start": "2026-01-26 00:00:00",
-      "team": "A Scrum",
-      "planned_sp": 53.0,
-      "done_sp": 53.0,
-      "carryover_sp": 0.0,
-      "achievement_pct": 100.0
-    },
-    {
-      "week_start": "2026-02-02 00:00:00",
-      "team": "AI&Analytics",
-      "planned_sp": 124.0,
-      "done_sp": 81.0,
-      "carryover_sp": 43.0,
-      "achievement_pct": 65.3
+      "team": "B Scrum",
+      "planned_sp": 74.5,
+      "done_sp": 59.0,
+      "carryover_sp": 15.5,
+      "achievement_pct": 79.2
     },
     {
       "week_start": "2026-02-02 00:00:00",
@@ -3536,6 +3528,14 @@
       "done_sp": 88.5,
       "carryover_sp": 52.0,
       "achievement_pct": 63.0
+    },
+    {
+      "week_start": "2026-02-02 00:00:00",
+      "team": "AI&Analytics",
+      "planned_sp": 124.0,
+      "done_sp": 81.0,
+      "carryover_sp": 43.0,
+      "achievement_pct": 65.3
     },
     {
       "week_start": "2026-02-02 00:00:00",
@@ -3692,16 +3692,16 @@
       "in_progress_count": 0.0
     },
     {
-      "assignee": "松本啓人",
-      "team": "B Scrum",
+      "assignee": "星竜馬",
+      "team": "A Scrum",
       "issue_count": 2,
       "total_sp": 1.5,
       "done_count": 2.0,
       "in_progress_count": 0.0
     },
     {
-      "assignee": "星竜馬",
-      "team": "A Scrum",
+      "assignee": "松本啓人",
+      "team": "B Scrum",
       "issue_count": 2,
       "total_sp": 1.5,
       "done_count": 2.0,
@@ -3716,15 +3716,7 @@
       "in_progress_count": 0.0
     },
     {
-      "assignee": "kazuki.shoji",
-      "team": "A Scrum",
-      "issue_count": 1,
-      "total_sp": 0.5,
-      "done_count": 1.0,
-      "in_progress_count": 0.0
-    },
-    {
-      "assignee": "若狭　大輝",
+      "assignee": "吉田健一",
       "team": "A Scrum",
       "issue_count": 1,
       "total_sp": 0.5,
@@ -3740,6 +3732,14 @@
       "in_progress_count": 0.0
     },
     {
+      "assignee": "kazuki.shoji",
+      "team": "A Scrum",
+      "issue_count": 1,
+      "total_sp": 0.5,
+      "done_count": 1.0,
+      "in_progress_count": 0.0
+    },
+    {
       "assignee": "kento.nakatsugawa",
       "team": "B Scrum",
       "issue_count": 1,
@@ -3748,7 +3748,7 @@
       "in_progress_count": 0.0
     },
     {
-      "assignee": "吉田健一",
+      "assignee": "若狭　大輝",
       "team": "A Scrum",
       "issue_count": 1,
       "total_sp": 0.5,
@@ -3813,12 +3813,12 @@
       "total_sp": 26.0
     },
     {
-      "assignee": "Makoto Takakura",
+      "assignee": "田野誠",
       "issue_count": 14,
       "total_sp": 25.0
     },
     {
-      "assignee": "田野誠",
+      "assignee": "Makoto Takakura",
       "issue_count": 14,
       "total_sp": 25.0
     },
@@ -3853,12 +3853,12 @@
       "total_sp": 1.5
     },
     {
-      "assignee": "kento.nakatsugawa",
+      "assignee": "吉田健一",
       "issue_count": 1,
       "total_sp": 0.5
     },
     {
-      "assignee": "吉田健一",
+      "assignee": "kento.nakatsugawa",
       "issue_count": 1,
       "total_sp": 0.5
     }
@@ -3891,13 +3891,13 @@
         "total_sp": 10.0
       },
       {
-        "assignee": "シバム",
-        "issue_count": 5,
+        "assignee": "山本",
+        "issue_count": 6,
         "total_sp": 7.5
       },
       {
-        "assignee": "山本",
-        "issue_count": 6,
+        "assignee": "シバム",
+        "issue_count": 5,
         "total_sp": 7.5
       },
       {
@@ -3958,13 +3958,13 @@
         "total_sp": 27.5
       },
       {
-        "assignee": "chun.sangwon",
-        "issue_count": 9,
+        "assignee": "山本",
+        "issue_count": 26,
         "total_sp": 27.0
       },
       {
-        "assignee": "山本",
-        "issue_count": 26,
+        "assignee": "chun.sangwon",
+        "issue_count": 9,
         "total_sp": 27.0
       },
       {
@@ -4013,6 +4013,11 @@
         "total_sp": 1.0
       },
       {
+        "assignee": "kazuma.morimitsu",
+        "issue_count": 2,
+        "total_sp": 0.5
+      },
+      {
         "assignee": "吉田健一",
         "issue_count": 1,
         "total_sp": 0.5
@@ -4020,11 +4025,6 @@
       {
         "assignee": "kazuki.shoji",
         "issue_count": 1,
-        "total_sp": 0.5
-      },
-      {
-        "assignee": "kazuma.morimitsu",
-        "issue_count": 2,
         "total_sp": 0.5
       }
     ]
@@ -12193,5 +12193,1249 @@
     "future_sp": 0.0,
     "avg_velocity": 91.0,
     "sufficiency": 0.0
-  }
+  },
+  "activeSprintDetails": [
+    {
+      "sprint_id": 1940,
+      "sprint_name": "Scrum A 2/10~2/16 だれでもノレルLP",
+      "team": "A Scrum",
+      "state": "active",
+      "start_date": null,
+      "end_date": null,
+      "total_issues": 1,
+      "done_issues": 0.0,
+      "in_progress_issues": 0.0,
+      "todo_issues": 1.0,
+      "total_sp": 0.0,
+      "done_sp": 0.0,
+      "in_progress_sp": 0.0,
+      "todo_sp": 0.0
+    },
+    {
+      "sprint_id": 1397,
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "state": "active",
+      "start_date": null,
+      "end_date": null,
+      "total_issues": 37,
+      "done_issues": 3.0,
+      "in_progress_issues": 29.0,
+      "todo_issues": 5.0,
+      "total_sp": 69.0,
+      "done_sp": 9.0,
+      "in_progress_sp": 50.0,
+      "todo_sp": 10.0
+    }
+  ],
+  "activeSprintIssues": [
+    {
+      "key": "NLTCS-439",
+      "summary": "【優先】DD対応資料作成",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "High",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "flagged": false,
+      "created_date": "2026-02-10 00:00:00",
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68,
+      "is_high_priority": true,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-463",
+      "summary": "Codes cleaning before giving to John San to deploy.",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "huang.tao",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 4.0,
+      "flagged": false,
+      "created_date": "2026-02-11 00:00:00",
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-452",
+      "summary": "シナリオ与信モデルのdeploymentについての全体像整理",
+      "status": "完了",
+      "status_category": "完了",
+      "priority": "Medium",
+      "assignee": "chun.sangwon",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "flagged": false,
+      "created_date": "2026-02-10 00:00:00",
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68,
+      "is_high_priority": false,
+      "completed_date": "2026-02-10 00:00:00"
+    },
+    {
+      "key": "NLTCS-441",
+      "summary": "データアセスメント：Fintech内把握部分",
+      "status": "進行中",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "Makoto Takakura",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "flagged": false,
+      "created_date": "2026-02-10 00:00:00",
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-415",
+      "summary": "~2/13データ棚卸",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "flagged": false,
+      "created_date": "2026-02-06 00:00:00",
+      "updated_date": "2026-02-11 00:00:00",
+      "days_since_update": 67,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-385",
+      "summary": "技術選定：既存BIツール機能利用テスト",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "Makoto Takakura",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "flagged": false,
+      "created_date": "2026-02-02 00:00:00",
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-386",
+      "summary": "技術選定：フルスクラッチBI PoC要件整理",
+      "status": "⛔️ CANCELED",
+      "status_category": "完了",
+      "priority": "Medium",
+      "assignee": "Makoto Takakura",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "flagged": false,
+      "created_date": "2026-02-02 00:00:00",
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-387",
+      "summary": "技術選定：フルスクラッチBI PoCデモ作成",
+      "status": "⛔️ CANCELED",
+      "status_category": "完了",
+      "priority": "Medium",
+      "assignee": "Makoto Takakura",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "flagged": false,
+      "created_date": "2026-02-02 00:00:00",
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-464",
+      "summary": "Micocloudのチャットデータ修正（イメージだけのメッセージ分解できるように修正）",
+      "status": "進行中",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "chun.sangwon",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "flagged": false,
+      "created_date": "2026-02-11 00:00:00",
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-416",
+      "summary": "2026年1月度予実差異｜リース原価試算",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "flagged": false,
+      "created_date": "2026-02-06 00:00:00",
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-456",
+      "summary": "FAST APIサーバーのTerraform作成 (伊藤さんが作成したサーバーを真似して構築)",
+      "status": "ICE BOX",
+      "status_category": "To Do",
+      "priority": "Medium",
+      "assignee": "chun.sangwon",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "flagged": false,
+      "created_date": "2026-02-10 00:00:00",
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-430",
+      "summary": "2/16 weekly report",
+      "status": "To Do",
+      "status_category": "To Do",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "flagged": false,
+      "created_date": "2026-02-09 00:00:00",
+      "updated_date": "2026-02-09 00:00:00",
+      "days_since_update": 69,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-454",
+      "summary": "伊藤さんから共有もらったコードの修正 (ファンさんのモデル適用)",
+      "status": "進行中",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "chun.sangwon",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "flagged": false,
+      "created_date": "2026-02-10 00:00:00",
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-472",
+      "summary": "成約予測のデータ相関分析",
+      "status": "進行中",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "chun.sangwon",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "flagged": false,
+      "created_date": "2026-02-12 00:00:00",
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-455",
+      "summary": "修正したコードのローカル実行テスト (ログ確認用)",
+      "status": "ICE BOX",
+      "status_category": "To Do",
+      "priority": "Medium",
+      "assignee": "chun.sangwon",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "flagged": false,
+      "created_date": "2026-02-10 00:00:00",
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-435",
+      "summary": "BigQueryで自社割賦のデフォルト率を自動化のraw data作成（スプレッドシート結合）",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 2.0,
+      "flagged": false,
+      "created_date": "2026-02-09 00:00:00",
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-471",
+      "summary": "分割弁済書の調査（どれくらい巻けているか）",
+      "status": "進行中",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 2.0,
+      "flagged": false,
+      "created_date": "2026-02-12 00:00:00",
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-420",
+      "summary": "本来スコア＋ルール上はC判定の案件がBまたはFに差配されている案件の初回支払い率算出",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 2.0,
+      "flagged": false,
+      "created_date": "2026-02-06 00:00:00",
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-419",
+      "summary": "本来スコア＋ルール上はF判定の案件がBに差配されてる案件の初回支払い率算出",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 2.0,
+      "flagged": false,
+      "created_date": "2026-02-06 00:00:00",
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-413",
+      "summary": "2026年1月度予実差異｜差異内容の詳細分析",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 2.0,
+      "flagged": false,
+      "created_date": "2026-02-06 00:00:00",
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-449",
+      "summary": "docbell scoreは何か？を説明する",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "huang.tao",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "flagged": false,
+      "created_date": "2026-02-10 00:00:00",
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-444",
+      "summary": "現状把握：ヒアリングリスト作成",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "Makoto Takakura",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "flagged": false,
+      "created_date": "2026-02-10 00:00:00",
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-425",
+      "summary": "中津川さんに相談して算出のイメージをつかむ（転リース実損額）",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "flagged": false,
+      "created_date": "2026-02-09 00:00:00",
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-424",
+      "summary": "423の前に新森さん・中津川とチェック",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "flagged": false,
+      "created_date": "2026-02-09 00:00:00",
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-422",
+      "summary": "BigQueryのテーブルやビュー、その他の実行コスト調査",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "flagged": false,
+      "created_date": "2026-02-09 00:00:00",
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-421",
+      "summary": "特認デフォルト率の共有（ウェストレイク会議）",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "flagged": false,
+      "created_date": "2026-02-09 00:00:00",
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-462",
+      "summary": "DD対応資料に必要だった項目の定義や課題を整理",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "flagged": false,
+      "created_date": "2026-02-10 00:00:00",
+      "updated_date": "2026-02-11 00:00:00",
+      "days_since_update": 67,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-399",
+      "summary": "2026年1月度予実差異｜着地と経理実績差異のシート作成",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "flagged": false,
+      "created_date": "2026-02-03 00:00:00",
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-388",
+      "summary": "技術選定：利用BIの合意",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "Makoto Takakura",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "flagged": false,
+      "created_date": "2026-02-02 00:00:00",
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-465",
+      "summary": "月次資料最終チェック（中津川さん）",
+      "status": "To Do",
+      "status_category": "To Do",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "flagged": false,
+      "created_date": "2026-02-12 00:00:00",
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-468",
+      "summary": "キントーン作業依頼　APP01_009667",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "flagged": false,
+      "created_date": "2026-02-12 00:00:00",
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-469",
+      "summary": "キントーン作業依頼　APP01_009699",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "flagged": false,
+      "created_date": "2026-02-12 00:00:00",
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-470",
+      "summary": "キントーン作業依頼　APP01_009676",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "flagged": false,
+      "created_date": "2026-02-12 00:00:00",
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-450",
+      "summary": "ジョンさんにモデルのファイルを渡す（Hand over the model file to Jeon-san）",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "huang.tao",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 0.0,
+      "flagged": false,
+      "created_date": "2026-02-10 00:00:00",
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-447",
+      "summary": "CIC/JICCなど信用情報機関のベンチマーク調査着手",
+      "status": "To Do",
+      "status_category": "To Do",
+      "priority": "Medium",
+      "assignee": "Makoto Takakura",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 0.0,
+      "flagged": false,
+      "created_date": "2026-02-10 00:00:00",
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-451",
+      "summary": "Major flow request to create a \"senario model 2.0\" application in Kintone",
+      "status": "進行中",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "huang.tao",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 0.0,
+      "flagged": false,
+      "created_date": "2026-02-10 00:00:00",
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "NLTCS-453",
+      "summary": "Copy SX Javascript on Kintone to replicate customer info to the 451 app",
+      "status": "進行中",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "huang.tao",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 0.0,
+      "flagged": false,
+      "created_date": "2026-02-10 00:00:00",
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68,
+      "is_high_priority": false,
+      "completed_date": null
+    },
+    {
+      "key": "ICT-1577",
+      "summary": "EPIC-1563｜Story発行依頼",
+      "status": "Unrefined",
+      "status_category": "To Do",
+      "priority": "Medium",
+      "assignee": "山本",
+      "sprint_name": "Scrum A 2/10~2/16 だれでもノレルLP",
+      "team": "A Scrum",
+      "reported_sp": 0.0,
+      "flagged": false,
+      "created_date": "2026-02-12 00:00:00",
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66,
+      "is_high_priority": false,
+      "completed_date": null
+    }
+  ],
+  "sprintBurndown": [
+    {
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "completion_date": "2026-02-10 00:00:00",
+      "completed_sp": 3.0,
+      "completed_count": 1
+    }
+  ],
+  "sprintMemberWorkload": [
+    {
+      "sprint_name": "Scrum A 2/10~2/16 だれでもノレルLP",
+      "team": "A Scrum",
+      "assignee": "山本",
+      "total_issues": 1,
+      "done_issues": 0.0,
+      "in_progress_issues": 0.0,
+      "todo_issues": 1.0,
+      "total_sp": 0.0,
+      "done_sp": 0.0,
+      "in_progress_sp": 0.0,
+      "todo_sp": 0.0
+    },
+    {
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "assignee": "chun.sangwon",
+      "total_issues": 6,
+      "done_issues": 1.0,
+      "in_progress_issues": 3.0,
+      "todo_issues": 2.0,
+      "total_sp": 18.0,
+      "done_sp": 3.0,
+      "in_progress_sp": 9.0,
+      "todo_sp": 6.0
+    },
+    {
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "assignee": "山田寿和",
+      "total_issues": 9,
+      "done_issues": 0.0,
+      "in_progress_issues": 8.0,
+      "todo_issues": 1.0,
+      "total_sp": 18.0,
+      "done_sp": 0.0,
+      "in_progress_sp": 15.0,
+      "todo_sp": 3.0
+    },
+    {
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "assignee": "森野篤",
+      "total_issues": 10,
+      "done_issues": 0.0,
+      "in_progress_issues": 9.0,
+      "todo_issues": 1.0,
+      "total_sp": 14.0,
+      "done_sp": 0.0,
+      "in_progress_sp": 13.0,
+      "todo_sp": 1.0
+    },
+    {
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "assignee": "Makoto Takakura",
+      "total_issues": 7,
+      "done_issues": 2.0,
+      "in_progress_issues": 4.0,
+      "todo_issues": 1.0,
+      "total_sp": 14.0,
+      "done_sp": 6.0,
+      "in_progress_sp": 8.0,
+      "todo_sp": 0.0
+    },
+    {
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "assignee": "huang.tao",
+      "total_issues": 5,
+      "done_issues": 0.0,
+      "in_progress_issues": 5.0,
+      "todo_issues": 0.0,
+      "total_sp": 5.0,
+      "done_sp": 0.0,
+      "in_progress_sp": 5.0,
+      "todo_sp": 0.0
+    }
+  ],
+  "highPriorityIssues": [
+    {
+      "key": "NLTCS-439",
+      "summary": "【優先】DD対応資料作成",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "High",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "flagged": false,
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68
+    }
+  ],
+  "stalledIssues": [
+    {
+      "key": "NLTCS-430",
+      "summary": "2/16 weekly report",
+      "status": "To Do",
+      "status_category": "To Do",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "updated_date": "2026-02-09 00:00:00",
+      "days_since_update": 69
+    },
+    {
+      "key": "NLTCS-439",
+      "summary": "【優先】DD対応資料作成",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "High",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68
+    },
+    {
+      "key": "NLTCS-444",
+      "summary": "現状把握：ヒアリングリスト作成",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "Makoto Takakura",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68
+    },
+    {
+      "key": "NLTCS-449",
+      "summary": "docbell scoreは何か？を説明する",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "huang.tao",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68
+    },
+    {
+      "key": "NLTCS-453",
+      "summary": "Copy SX Javascript on Kintone to replicate customer info to the 451 app",
+      "status": "進行中",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "huang.tao",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 0.0,
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68
+    },
+    {
+      "key": "NLTCS-447",
+      "summary": "CIC/JICCなど信用情報機関のベンチマーク調査着手",
+      "status": "To Do",
+      "status_category": "To Do",
+      "priority": "Medium",
+      "assignee": "Makoto Takakura",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 0.0,
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68
+    },
+    {
+      "key": "NLTCS-450",
+      "summary": "ジョンさんにモデルのファイルを渡す（Hand over the model file to Jeon-san）",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "huang.tao",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 0.0,
+      "updated_date": "2026-02-10 00:00:00",
+      "days_since_update": 68
+    },
+    {
+      "key": "NLTCS-415",
+      "summary": "~2/13データ棚卸",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "updated_date": "2026-02-11 00:00:00",
+      "days_since_update": 67
+    },
+    {
+      "key": "NLTCS-462",
+      "summary": "DD対応資料に必要だった項目の定義や課題を整理",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "updated_date": "2026-02-11 00:00:00",
+      "days_since_update": 67
+    },
+    {
+      "key": "NLTCS-463",
+      "summary": "Codes cleaning before giving to John San to deploy.",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "huang.tao",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 4.0,
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66
+    },
+    {
+      "key": "NLTCS-472",
+      "summary": "成約予測のデータ相関分析",
+      "status": "進行中",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "chun.sangwon",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66
+    },
+    {
+      "key": "NLTCS-455",
+      "summary": "修正したコードのローカル実行テスト (ログ確認用)",
+      "status": "ICE BOX",
+      "status_category": "To Do",
+      "priority": "Medium",
+      "assignee": "chun.sangwon",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66
+    },
+    {
+      "key": "NLTCS-454",
+      "summary": "伊藤さんから共有もらったコードの修正 (ファンさんのモデル適用)",
+      "status": "進行中",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "chun.sangwon",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66
+    },
+    {
+      "key": "NLTCS-464",
+      "summary": "Micocloudのチャットデータ修正（イメージだけのメッセージ分解できるように修正）",
+      "status": "進行中",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "chun.sangwon",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66
+    },
+    {
+      "key": "NLTCS-456",
+      "summary": "FAST APIサーバーのTerraform作成 (伊藤さんが作成したサーバーを真似して構築)",
+      "status": "ICE BOX",
+      "status_category": "To Do",
+      "priority": "Medium",
+      "assignee": "chun.sangwon",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66
+    },
+    {
+      "key": "NLTCS-468",
+      "summary": "キントーン作業依頼　APP01_009667",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66
+    },
+    {
+      "key": "NLTCS-399",
+      "summary": "2026年1月度予実差異｜着地と経理実績差異のシート作成",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66
+    },
+    {
+      "key": "NLTCS-470",
+      "summary": "キントーン作業依頼　APP01_009676",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66
+    },
+    {
+      "key": "NLTCS-469",
+      "summary": "キントーン作業依頼　APP01_009699",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66
+    },
+    {
+      "key": "ICT-1577",
+      "summary": "EPIC-1563｜Story発行依頼",
+      "status": "Unrefined",
+      "status_category": "To Do",
+      "priority": "Medium",
+      "assignee": "山本",
+      "sprint_name": "Scrum A 2/10~2/16 だれでもノレルLP",
+      "team": "A Scrum",
+      "reported_sp": 0.0,
+      "updated_date": "2026-02-12 00:00:00",
+      "days_since_update": 66
+    },
+    {
+      "key": "NLTCS-441",
+      "summary": "データアセスメント：Fintech内把握部分",
+      "status": "進行中",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "Makoto Takakura",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65
+    },
+    {
+      "key": "NLTCS-416",
+      "summary": "2026年1月度予実差異｜リース原価試算",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65
+    },
+    {
+      "key": "NLTCS-385",
+      "summary": "技術選定：既存BIツール機能利用テスト",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "Makoto Takakura",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 3.0,
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65
+    },
+    {
+      "key": "NLTCS-435",
+      "summary": "BigQueryで自社割賦のデフォルト率を自動化のraw data作成（スプレッドシート結合）",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 2.0,
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65
+    },
+    {
+      "key": "NLTCS-420",
+      "summary": "本来スコア＋ルール上はC判定の案件がBまたはFに差配されている案件の初回支払い率算出",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 2.0,
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65
+    },
+    {
+      "key": "NLTCS-419",
+      "summary": "本来スコア＋ルール上はF判定の案件がBに差配されてる案件の初回支払い率算出",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 2.0,
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65
+    },
+    {
+      "key": "NLTCS-471",
+      "summary": "分割弁済書の調査（どれくらい巻けているか）",
+      "status": "進行中",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 2.0,
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65
+    },
+    {
+      "key": "NLTCS-413",
+      "summary": "2026年1月度予実差異｜差異内容の詳細分析",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 2.0,
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65
+    },
+    {
+      "key": "NLTCS-425",
+      "summary": "中津川さんに相談して算出のイメージをつかむ（転リース実損額）",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65
+    },
+    {
+      "key": "NLTCS-465",
+      "summary": "月次資料最終チェック（中津川さん）",
+      "status": "To Do",
+      "status_category": "To Do",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65
+    },
+    {
+      "key": "NLTCS-422",
+      "summary": "BigQueryのテーブルやビュー、その他の実行コスト調査",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65
+    },
+    {
+      "key": "NLTCS-421",
+      "summary": "特認デフォルト率の共有（ウェストレイク会議）",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "山田寿和",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65
+    },
+    {
+      "key": "NLTCS-388",
+      "summary": "技術選定：利用BIの合意",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "Makoto Takakura",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65
+    },
+    {
+      "key": "NLTCS-424",
+      "summary": "423の前に新森さん・中津川とチェック",
+      "status": "⭐️ Review",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "森野篤",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 1.0,
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65
+    },
+    {
+      "key": "NLTCS-451",
+      "summary": "Major flow request to create a \"senario model 2.0\" application in Kintone",
+      "status": "進行中",
+      "status_category": "進行中",
+      "priority": "Medium",
+      "assignee": "huang.tao",
+      "sprint_name": "Sprint 9",
+      "team": "AI&Analytics",
+      "reported_sp": 0.0,
+      "updated_date": "2026-02-13 00:00:00",
+      "days_since_update": 65
+    }
+  ]
 }

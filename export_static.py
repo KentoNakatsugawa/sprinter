@@ -92,6 +92,45 @@ def export_all():
     if sufficiency and sufficiency.get('snapshot_date'):
         sufficiency['snapshot_date'] = str(sufficiency['snapshot_date'])
 
+    # 14. Active sprint details (for current sprint analysis)
+    active_sprint_details = db.get_active_sprint_details()
+    active_sprint_details_json = active_sprint_details.to_dict(orient='records')
+
+    # 15. Active sprint issues
+    active_sprint_issues = db.get_active_sprint_issues()
+    active_sprint_issues_json = active_sprint_issues.to_dict(orient='records')
+    for row in active_sprint_issues_json:
+        for key in ['created_date', 'updated_date', 'completed_date']:
+            if row.get(key) and str(row.get(key)) != 'NaT':
+                row[key] = str(row[key])
+            elif row.get(key):
+                row[key] = None
+
+    # 16. Sprint daily burndown data
+    sprint_burndown = db.get_sprint_daily_burndown()
+    sprint_burndown_json = sprint_burndown.to_dict(orient='records')
+    for row in sprint_burndown_json:
+        if row.get('completion_date'):
+            row['completion_date'] = str(row['completion_date'])
+
+    # 17. Sprint member workload
+    sprint_member_workload = db.get_sprint_member_workload()
+    sprint_member_workload_json = sprint_member_workload.to_dict(orient='records')
+
+    # 18. High priority issues
+    high_priority_issues = db.get_high_priority_issues()
+    high_priority_issues_json = high_priority_issues.to_dict(orient='records')
+    for row in high_priority_issues_json:
+        if row.get('updated_date'):
+            row['updated_date'] = str(row['updated_date'])
+
+    # 19. Stalled issues (not updated for 3+ days)
+    stalled_issues = db.get_stalled_issues(3)
+    stalled_issues_json = stalled_issues.to_dict(orient='records')
+    for row in stalled_issues_json:
+        if row.get('updated_date'):
+            row['updated_date'] = str(row['updated_date'])
+
     # Combine all data
     all_data = {
         'exportedAt': str(date.today()),
@@ -109,6 +148,13 @@ def export_all():
         'individualVelocity': individual_velocity_json,
         'issues': issues_table_json,
         'sufficiency': sufficiency,
+        # Current sprint analysis
+        'activeSprintDetails': active_sprint_details_json,
+        'activeSprintIssues': active_sprint_issues_json,
+        'sprintBurndown': sprint_burndown_json,
+        'sprintMemberWorkload': sprint_member_workload_json,
+        'highPriorityIssues': high_priority_issues_json,
+        'stalledIssues': stalled_issues_json,
     }
 
     # Write to JSON file
@@ -121,6 +167,10 @@ def export_all():
     print(f"  - {len(team_summary_json)} team summaries")
     print(f"  - {len(issues_table_json)} issues")
     print(f"  - {len(individual_velocity_json)} individual velocity records")
+    print(f"  - {len(active_sprint_details_json)} active sprints")
+    print(f"  - {len(active_sprint_issues_json)} active sprint issues")
+    print(f"  - {len(high_priority_issues_json)} high priority issues")
+    print(f"  - {len(stalled_issues_json)} stalled issues")
 
     return output_file
 

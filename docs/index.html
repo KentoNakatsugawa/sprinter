@@ -390,6 +390,7 @@
 
         <div class="tabs">
             <button class="tab active" data-tab="team">チーム別ダッシュボード</button>
+            <button class="tab" data-tab="sprint">現スプリント分析</button>
             <button class="tab" data-tab="individual">個人別ベロシティ</button>
         </div>
 
@@ -461,6 +462,91 @@
                     <div class="chart-container chart-small">
                         <canvas id="status-chart"></canvas>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="sprint-tab" class="tab-content">
+            <!-- Sprint Risk Alerts -->
+            <div id="sprint-alerts"></div>
+
+            <!-- Active Sprint Overview -->
+            <div id="active-sprint-overview" class="card">
+                <p class="card-title">アクティブスプリント概要</p>
+                <p class="card-desc">現在進行中のスプリントの状況と達成予測</p>
+                <div class="sprint-grid" id="active-sprint-grid"></div>
+            </div>
+
+            <!-- High Priority Issues Alert -->
+            <div id="high-priority-section" class="card">
+                <p class="card-title">要注意タスク（優先度高/Hotfix/バグ）</p>
+                <p class="card-desc">優先度が高いまたは緊急対応が必要なタスクの一覧。未完了のものを表示</p>
+                <div class="table-container">
+                    <table id="high-priority-table">
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>概要</th>
+                                <th>ステータス</th>
+                                <th>担当者</th>
+                                <th>SP</th>
+                                <th>滞留日数</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Stalled Issues -->
+            <div id="stalled-section" class="card">
+                <p class="card-title">滞留タスク（3日以上更新なし）</p>
+                <p class="card-desc">3日以上更新がない未完了タスク。進捗確認が必要</p>
+                <div class="table-container">
+                    <table id="stalled-table">
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>概要</th>
+                                <th>ステータス</th>
+                                <th>担当者</th>
+                                <th>SP</th>
+                                <th>滞留日数</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Burndown Chart -->
+            <div id="burndown-section" class="card">
+                <p class="card-title">バーンダウン/完了推移</p>
+                <p class="card-desc">日別の完了SP推移</p>
+                <div class="chart-container chart-small">
+                    <canvas id="burndown-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Member Workload -->
+            <div id="member-workload-section" class="card">
+                <p class="card-title">メンバー別負荷（現スプリント）</p>
+                <p class="card-desc">現スプリントでのメンバー別タスク状況</p>
+                <div class="table-container">
+                    <table id="member-workload-table">
+                        <thead>
+                            <tr>
+                                <th>担当者</th>
+                                <th>チーム</th>
+                                <th>合計SP</th>
+                                <th>完了SP</th>
+                                <th>進行中SP</th>
+                                <th>未着手SP</th>
+                                <th>完了率</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -545,6 +631,13 @@
             renderLeaderboard();
             renderStatusChart();
             renderIndividualVelocity();
+            // Current sprint analysis
+            renderSprintAlerts();
+            renderActiveSprintOverview();
+            renderHighPriorityIssues();
+            renderStalledIssues();
+            renderBurndownChart();
+            renderMemberWorkload();
         }
 
         function renderSufficiencyAlert() {
@@ -948,6 +1041,275 @@
                     }
                 }
             });
+        }
+
+        // ============================================
+        // Current Sprint Analysis Functions
+        // ============================================
+
+        function renderSprintAlerts() {
+            const alerts = [];
+            const activeDetails = dashboardData.activeSprintDetails || [];
+            const highPriority = dashboardData.highPriorityIssues || [];
+            const stalled = dashboardData.stalledIssues || [];
+
+            // Check each active sprint for risk
+            activeDetails.forEach(sprint => {
+                const pct = sprint.total_sp > 0 ? (sprint.done_sp / sprint.total_sp * 100) : 0;
+
+                // Low achievement rate warning
+                if (pct < 30 && sprint.total_sp > 0) {
+                    alerts.push({
+                        type: 'red',
+                        msg: `<strong>⚠️ ${sprint.team}</strong>: 達成率 ${pct.toFixed(0)}% — 現在のペースではスプリント目標達成が困難です (${sprint.done_sp}/${sprint.total_sp} SP)`
+                    });
+                } else if (pct < 50 && sprint.total_sp > 0) {
+                    alerts.push({
+                        type: 'yellow',
+                        msg: `<strong>⚡ ${sprint.team}</strong>: 達成率 ${pct.toFixed(0)}% — 進捗に注意が必要です (${sprint.done_sp}/${sprint.total_sp} SP)`
+                    });
+                }
+            });
+
+            // High priority issues not done
+            if (highPriority.length > 0) {
+                alerts.push({
+                    type: 'red',
+                    msg: `<strong>🔥 優先タスク未完了</strong>: ${highPriority.length}件の高優先度タスクが完了していません`
+                });
+            }
+
+            // Stalled issues warning
+            if (stalled.length >= 5) {
+                alerts.push({
+                    type: 'yellow',
+                    msg: `<strong>⏸️ 滞留タスク</strong>: ${stalled.length}件のタスクが3日以上更新されていません`
+                });
+            }
+
+            const alertsHtml = alerts.map(a =>
+                `<div class="alert alert-${a.type}">${a.msg}</div>`
+            ).join('');
+
+            document.getElementById('sprint-alerts').innerHTML = alertsHtml;
+        }
+
+        function renderActiveSprintOverview() {
+            const details = dashboardData.activeSprintDetails || [];
+
+            if (details.length === 0) {
+                document.getElementById('active-sprint-grid').innerHTML =
+                    '<p style="color: var(--ict-gray-500);">アクティブなスプリントはありません</p>';
+                return;
+            }
+
+            // Calculate prediction based on velocity
+            const recentTrend = dashboardData.recentTrend || [];
+
+            document.getElementById('active-sprint-grid').innerHTML = details.map(sprint => {
+                const pct = sprint.total_sp > 0 ? (sprint.done_sp / sprint.total_sp * 100) : 0;
+                const remaining = sprint.total_sp - sprint.done_sp;
+
+                // Get team's average velocity
+                const teamTrend = recentTrend.filter(r => r.team === sprint.team);
+                const avgVelocity = teamTrend.length > 0
+                    ? teamTrend.reduce((s, r) => s + r.done_sp, 0) / teamTrend.length
+                    : 0;
+
+                // Predict if sprint will be completed (assuming 2 week sprint)
+                const predictedCompletion = avgVelocity > 0 ? (sprint.done_sp + avgVelocity * 2) : sprint.done_sp;
+                const predictedPct = sprint.total_sp > 0 ? (predictedCompletion / sprint.total_sp * 100) : 0;
+                const willComplete = predictedPct >= 80;
+
+                // Determine status
+                let statusIcon, statusColor, statusBg, statusBorder;
+                if (pct >= 70) {
+                    statusIcon = '✓'; statusColor = '#115a36'; statusBg = '#e6f5ec'; statusBorder = '#c2e5d1';
+                } else if (pct >= 40 || willComplete) {
+                    statusIcon = '→'; statusColor = '#c74700'; statusBg = '#ffeee2'; statusBorder = '#ffc199';
+                } else {
+                    statusIcon = '⚠'; statusColor = '#ce0000'; statusBg = '#fdeeee'; statusBorder = '#ffdada';
+                }
+
+                return `
+                    <div class="sprint-card" style="background: ${statusBg}; color: ${statusColor}; border-color: ${statusBorder};">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="font-size: 0.875rem; font-weight: 600;">${sprint.team}</span>
+                            <span style="font-size: 1.5rem;">${statusIcon}</span>
+                        </div>
+
+                        <div style="margin-bottom: 0.75rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                                <span style="font-size: 0.75rem;">達成率</span>
+                                <span style="font-size: 1.5rem; font-weight: 700;">${pct.toFixed(0)}%</span>
+                            </div>
+                            <div class="pbar"><div class="pbar-fill" style="width: ${Math.min(pct, 100)}%; background: ${statusColor};"></div></div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; font-size: 0.75rem; margin-bottom: 0.5rem;">
+                            <div style="text-align: center; padding: 0.25rem; background: rgba(255,255,255,0.5); border-radius: 0.25rem;">
+                                <div style="opacity: 0.7;">計画</div>
+                                <div style="font-weight: 700;">${sprint.total_sp} SP</div>
+                            </div>
+                            <div style="text-align: center; padding: 0.25rem; background: rgba(255,255,255,0.5); border-radius: 0.25rem;">
+                                <div style="opacity: 0.7;">完了</div>
+                                <div style="font-weight: 700;">${sprint.done_sp} SP</div>
+                            </div>
+                            <div style="text-align: center; padding: 0.25rem; background: rgba(255,255,255,0.5); border-radius: 0.25rem;">
+                                <div style="opacity: 0.7;">残り</div>
+                                <div style="font-weight: 700;">${remaining.toFixed(1)} SP</div>
+                            </div>
+                        </div>
+
+                        <div style="font-size: 0.7rem; opacity: 0.8; border-top: 1px solid ${statusBorder}; padding-top: 0.5rem; margin-top: 0.25rem;">
+                            <div>📊 予測完了率: ${Math.min(predictedPct, 100).toFixed(0)}% (平均velocity: ${avgVelocity.toFixed(1)} SP/週)</div>
+                            <div style="margin-top: 0.25rem;">📋 ${sprint.sprint_name}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderHighPriorityIssues() {
+            const issues = dashboardData.highPriorityIssues || [];
+            const tbody = document.querySelector('#high-priority-table tbody');
+
+            if (issues.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--ict-gray-500);">優先度の高い未完了タスクはありません ✓</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = issues.map(issue => {
+                const days = issue.days_since_update || 0;
+                const daysColor = days >= 5 ? '#ce0000' : days >= 3 ? '#c74700' : '#1a1a1a';
+                const priorityBadge = issue.priority === 'Highest' ? '🔴' :
+                                      issue.priority === 'High' ? '🟠' : '🟡';
+
+                return `
+                    <tr>
+                        <td><a href="https://idomcars.atlassian.net/browse/${issue.key}" target="_blank" style="color: var(--ict-blue-800);">${issue.key}</a></td>
+                        <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${issue.summary}">${priorityBadge} ${issue.summary}</td>
+                        <td>${issue.status}</td>
+                        <td>${issue.assignee || '-'}</td>
+                        <td>${issue.reported_sp || 0}</td>
+                        <td style="color: ${daysColor}; font-weight: ${days >= 3 ? '700' : '400'};">${days}日</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderStalledIssues() {
+            const issues = dashboardData.stalledIssues || [];
+            const tbody = document.querySelector('#stalled-table tbody');
+
+            if (issues.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--ict-gray-500);">滞留タスクはありません ✓</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = issues.slice(0, 20).map(issue => {
+                const days = issue.days_since_update || 0;
+                const daysColor = days >= 7 ? '#ce0000' : days >= 5 ? '#c74700' : '#1a1a1a';
+
+                return `
+                    <tr>
+                        <td><a href="https://idomcars.atlassian.net/browse/${issue.key}" target="_blank" style="color: var(--ict-blue-800);">${issue.key}</a></td>
+                        <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${issue.summary}">${issue.summary}</td>
+                        <td>${issue.status}</td>
+                        <td>${issue.assignee || '-'}</td>
+                        <td>${issue.reported_sp || 0}</td>
+                        <td style="color: ${daysColor}; font-weight: 700;">${days}日</td>
+                    </tr>
+                `;
+            }).join('');
+
+            if (issues.length > 20) {
+                tbody.innerHTML += `<tr><td colspan="6" style="text-align: center; color: var(--ict-gray-500);">他 ${issues.length - 20}件...</td></tr>`;
+            }
+        }
+
+        function renderBurndownChart() {
+            const burndown = dashboardData.sprintBurndown || [];
+
+            if (burndown.length === 0) {
+                document.getElementById('burndown-section').style.display = 'none';
+                return;
+            }
+
+            const dates = [...new Set(burndown.map(b => b.completion_date))].sort();
+            const teams = [...new Set(burndown.map(b => b.team))];
+
+            const datasets = teams.map(team => {
+                const teamData = burndown.filter(b => b.team === team);
+                let cumulative = 0;
+                const data = dates.map(date => {
+                    const d = teamData.find(b => b.completion_date === date);
+                    if (d) cumulative += d.completed_sp;
+                    return cumulative;
+                });
+
+                return {
+                    label: team,
+                    data: data,
+                    borderColor: TEAM_COLORS[team] || '#999',
+                    backgroundColor: (TEAM_COLORS[team] || '#999') + '20',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                };
+            });
+
+            new Chart(document.getElementById('burndown-chart'), {
+                type: 'line',
+                data: {
+                    labels: dates.map(d => d.substring(5)),
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: '累積完了SP' }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'top' }
+                    }
+                }
+            });
+        }
+
+        function renderMemberWorkload() {
+            const workload = dashboardData.sprintMemberWorkload || [];
+            const tbody = document.querySelector('#member-workload-table tbody');
+
+            if (workload.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--ict-gray-500);">データがありません</td></tr>';
+                return;
+            }
+
+            // Sort by total SP descending
+            const sorted = [...workload].sort((a, b) => b.total_sp - a.total_sp);
+
+            tbody.innerHTML = sorted.map(row => {
+                const completionPct = row.total_sp > 0 ? (row.done_sp / row.total_sp * 100) : 0;
+                const pctColor = completionPct >= 70 ? '#115a36' :
+                                 completionPct >= 40 ? '#c74700' : '#ce0000';
+
+                return `
+                    <tr>
+                        <td>${row.assignee}</td>
+                        <td><span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: ${TEAM_COLORS[row.team] || '#999'}; margin-right: 0.5rem;"></span>${row.team}</td>
+                        <td style="font-weight: 600;">${row.total_sp}</td>
+                        <td style="color: #115a36;">${row.done_sp}</td>
+                        <td style="color: #0031d8;">${row.in_progress_sp}</td>
+                        <td style="color: #7f7f7f;">${row.todo_sp}</td>
+                        <td style="color: ${pctColor}; font-weight: 600;">${completionPct.toFixed(0)}%</td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         // Initialize

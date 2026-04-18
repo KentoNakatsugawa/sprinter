@@ -1102,3 +1102,230 @@ def calculate_sprint_total_sp(sprint_name: str) -> float:
     con.close()
 
     return float(result.iloc[0]["total_sp"])
+
+
+# ── Current Sprint Analysis ────────────────────────────────────
+
+def get_active_sprint_details() -> pd.DataFrame:
+    """Get detailed info for active sprints including dates and daily progress."""
+    con = _connect()
+    result = con.execute(f"""
+        WITH active AS (
+            SELECT ss.sprint_id, ss.sprint_name, ss.board_name, ss.state,
+                   sm.start_date, sm.end_date
+            FROM synced_sprints ss
+            LEFT JOIN sprint_metadata sm ON ss.sprint_id = sm.sprint_id
+            WHERE ss.state = 'active'
+        )
+        SELECT
+            a.sprint_id,
+            a.sprint_name,
+            {TEAM_SQL} AS team,
+            a.state,
+            a.start_date,
+            a.end_date,
+            COUNT(*) AS total_issues,
+            SUM(CASE WHEN i.status_category = '完了' THEN 1 ELSE 0 END) AS done_issues,
+            SUM(CASE WHEN i.status_category = '進行中' THEN 1 ELSE 0 END) AS in_progress_issues,
+            SUM(CASE WHEN i.status_category = 'To Do' THEN 1 ELSE 0 END) AS todo_issues,
+            ROUND(SUM(i.reported_sp), 1) AS total_sp,
+            ROUND(SUM(CASE WHEN i.status_category = '完了' THEN i.reported_sp ELSE 0 END), 1) AS done_sp,
+            ROUND(SUM(CASE WHEN i.status_category = '進行中' THEN i.reported_sp ELSE 0 END), 1) AS in_progress_sp,
+            ROUND(SUM(CASE WHEN i.status_category = 'To Do' THEN i.reported_sp ELSE 0 END), 1) AS todo_sp
+        FROM active a
+        JOIN issues i ON i.sprint_id = a.sprint_id
+        GROUP BY a.sprint_id, a.sprint_name, team, a.state, a.start_date, a.end_date
+        ORDER BY team
+    """).fetchdf()
+    con.close()
+    return result
+
+
+def get_active_sprint_issues() -> pd.DataFrame:
+    """Get all issues in active sprints with detailed status."""
+    con = _connect()
+    result = con.execute(f"""
+        WITH active AS (
+            SELECT sprint_id, sprint_name
+            FROM synced_sprints
+            WHERE state = 'active'
+        )
+        SELECT
+            i.key,
+            i.summary,
+            i.status,
+            i.status_category,
+            i.priority,
+            i.assignee,
+            a.sprint_name,
+            {TEAM_SQL} AS team,
+            i.reported_sp,
+            i.flagged,
+            i.created::DATE AS created_date,
+            i.updated::DATE AS updated_date,
+            -- Days since last update
+            (CURRENT_DATE - i.updated::DATE) AS days_since_update,
+            -- Check if high priority keywords
+            CASE WHEN i.summary LIKE '%優先%' OR i.summary LIKE '%緊急%'
+                      OR i.summary LIKE '%hotfix%' OR i.summary LIKE '%Hotfix%'
+                      OR i.summary LIKE '%HOTFIX%' OR i.summary LIKE '%ホットフィックス%'
+                      OR i.priority IN ('Highest', 'High')
+                 THEN TRUE ELSE FALSE END AS is_high_priority,
+            -- Completion date if done
+            (SELECT MIN(cl.created)::DATE FROM issue_changelog cl
+             WHERE cl.issue_key = i.key AND cl.field = 'status'
+               AND cl.to_string IN {DONE_STATUSES_SQL}
+            ) AS completed_date
+        FROM active a
+        JOIN issues i ON i.sprint_id = a.sprint_id
+        ORDER BY
+            CASE WHEN i.priority = 'Highest' THEN 1
+                 WHEN i.priority = 'High' THEN 2
+                 WHEN i.summary LIKE '%優先%' OR i.summary LIKE '%緊急%' THEN 2
+                 ELSE 3 END,
+            i.reported_sp DESC
+    """).fetchdf()
+    con.close()
+    return result
+
+
+def get_sprint_daily_burndown() -> pd.DataFrame:
+    """Get daily completion data for burndown chart of active sprints."""
+    con = _connect()
+    result = con.execute(f"""
+        WITH active AS (
+            SELECT sprint_id, sprint_name
+            FROM synced_sprints
+            WHERE state = 'active'
+        ),
+        completions AS (
+            SELECT
+                a.sprint_name,
+                {_team_sql('i')} AS team,
+                cl.created::DATE AS completion_date,
+                SUM(i.reported_sp) AS completed_sp,
+                COUNT(*) AS completed_count
+            FROM active a
+            JOIN issues i ON i.sprint_id = a.sprint_id
+            JOIN issue_changelog cl ON cl.issue_key = i.key
+            WHERE cl.field = 'status'
+              AND cl.to_string IN {DONE_STATUSES_SQL}
+            GROUP BY a.sprint_name, team, completion_date
+        )
+        SELECT * FROM completions
+        ORDER BY sprint_name, completion_date
+    """).fetchdf()
+    con.close()
+    return result
+
+
+def get_sprint_member_workload() -> pd.DataFrame:
+    """Get per-member workload for active sprints."""
+    con = _connect()
+    result = con.execute(f"""
+        WITH active AS (
+            SELECT sprint_id, sprint_name
+            FROM synced_sprints
+            WHERE state = 'active'
+        )
+        SELECT
+            a.sprint_name,
+            {TEAM_SQL} AS team,
+            i.assignee,
+            COUNT(*) AS total_issues,
+            SUM(CASE WHEN i.status_category = '完了' THEN 1 ELSE 0 END) AS done_issues,
+            SUM(CASE WHEN i.status_category = '進行中' THEN 1 ELSE 0 END) AS in_progress_issues,
+            SUM(CASE WHEN i.status_category = 'To Do' THEN 1 ELSE 0 END) AS todo_issues,
+            ROUND(SUM(i.reported_sp), 1) AS total_sp,
+            ROUND(SUM(CASE WHEN i.status_category = '完了' THEN i.reported_sp ELSE 0 END), 1) AS done_sp,
+            ROUND(SUM(CASE WHEN i.status_category = '進行中' THEN i.reported_sp ELSE 0 END), 1) AS in_progress_sp,
+            ROUND(SUM(CASE WHEN i.status_category = 'To Do' THEN i.reported_sp ELSE 0 END), 1) AS todo_sp
+        FROM active a
+        JOIN issues i ON i.sprint_id = a.sprint_id
+        WHERE i.assignee IS NOT NULL
+        GROUP BY a.sprint_name, team, i.assignee
+        ORDER BY team, total_sp DESC
+    """).fetchdf()
+    con.close()
+    return result
+
+
+def get_high_priority_issues() -> pd.DataFrame:
+    """Get high priority issues in active sprints that need attention."""
+    con = _connect()
+    result = con.execute(f"""
+        WITH active AS (
+            SELECT sprint_id, sprint_name
+            FROM synced_sprints
+            WHERE state = 'active'
+        )
+        SELECT
+            i.key,
+            i.summary,
+            i.status,
+            i.status_category,
+            i.priority,
+            i.assignee,
+            a.sprint_name,
+            {TEAM_SQL} AS team,
+            i.reported_sp,
+            i.flagged,
+            i.updated::DATE AS updated_date,
+            (CURRENT_DATE - i.updated::DATE) AS days_since_update
+        FROM active a
+        JOIN issues i ON i.sprint_id = a.sprint_id
+        WHERE i.status_category != '完了'
+          AND (
+            i.priority IN ('Highest', 'High')
+            OR i.summary LIKE '%優先%'
+            OR i.summary LIKE '%緊急%'
+            OR i.summary LIKE '%hotfix%'
+            OR i.summary LIKE '%Hotfix%'
+            OR i.summary LIKE '%HOTFIX%'
+            OR i.summary LIKE '%ホットフィックス%'
+            OR i.summary LIKE '%バグ%'
+            OR i.summary LIKE '%bug%'
+            OR i.summary LIKE '%Bug%'
+            OR i.summary LIKE '%不具合%'
+            OR i.summary LIKE '%障害%'
+            OR i.flagged = TRUE
+          )
+        ORDER BY
+            CASE WHEN i.priority = 'Highest' THEN 1
+                 WHEN i.priority = 'High' THEN 2
+                 ELSE 3 END,
+            days_since_update DESC
+    """).fetchdf()
+    con.close()
+    return result
+
+
+def get_stalled_issues(days_threshold: int = 3) -> pd.DataFrame:
+    """Get issues in active sprints that haven't been updated for X days."""
+    con = _connect()
+    result = con.execute(f"""
+        WITH active AS (
+            SELECT sprint_id, sprint_name
+            FROM synced_sprints
+            WHERE state = 'active'
+        )
+        SELECT
+            i.key,
+            i.summary,
+            i.status,
+            i.status_category,
+            i.priority,
+            i.assignee,
+            a.sprint_name,
+            {TEAM_SQL} AS team,
+            i.reported_sp,
+            i.updated::DATE AS updated_date,
+            (CURRENT_DATE - i.updated::DATE) AS days_since_update
+        FROM active a
+        JOIN issues i ON i.sprint_id = a.sprint_id
+        WHERE i.status_category != '完了'
+          AND (CURRENT_DATE - i.updated::DATE) >= ?
+        ORDER BY days_since_update DESC, i.reported_sp DESC
+    """, [days_threshold]).fetchdf()
+    con.close()
+    return result
