@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0031d8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3460fb;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="speedLines" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0031d8;stop-opacity:0" />
+      <stop offset="100%" style="stop-color:#0031d8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="url(#grad)"/>
+
+  <!-- Upward trend line (velocity graph) -->
+  <path d="M 30 150 Q 60 140, 80 120 T 130 70 T 170 40"
+        stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.3"/>
+
+  <!-- Runner silhouette -->
+  <g fill="#ffffff" transform="translate(45, 35) scale(0.55)">
+    <!-- Head -->
+    <circle cx="165" cy="45" r="22"/>
+
+    <!-- Body - leaning forward dynamically -->
+    <path d="M 155 65
+             Q 145 90, 130 115
+             L 115 115
+             Q 130 90, 145 70
+             Q 160 75, 175 70
+             Q 185 90, 175 115
+             L 190 115
+             Q 195 90, 180 65
+             Z"/>
+
+    <!-- Back leg (extended behind) -->
+    <path d="M 120 110
+             Q 90 130, 55 125
+             L 50 135
+             Q 85 145, 125 125
+             Z"/>
+
+    <!-- Front leg (bent, pushing forward) -->
+    <path d="M 170 110
+             Q 190 140, 210 175
+             L 225 175
+             Q 200 145, 185 115
+             Z"/>
+
+    <!-- Back arm -->
+    <path d="M 140 80
+             Q 120 95, 100 85
+             L 95 95
+             Q 115 105, 140 95
+             Z"/>
+
+    <!-- Front arm (pumping forward) -->
+    <path d="M 175 80
+             Q 200 70, 220 55
+             L 225 65
+             Q 205 80, 180 95
+             Z"/>
+  </g>
+
+  <!-- Speed lines -->
+  <g stroke="url(#speedLines)" stroke-width="3" stroke-linecap="round" opacity="0.6">
+    <line x1="25" y1="85" x2="55" y2="85"/>
+    <line x1="20" y1="100" x2="60" y2="100"/>
+    <line x1="25" y1="115" x2="55" y2="115"/>
+  </g>
+</svg>

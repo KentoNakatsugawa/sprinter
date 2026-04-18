@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0031d8"/>
+      <stop offset="100%" style="stop-color:#3460fb"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <circle cx="16" cy="16" r="15" fill="url(#grad)"/>
+
+  <!-- Simplified runner -->
+  <g fill="#ffffff" transform="translate(4, 5) scale(0.09)">
+    <!-- Head -->
+    <circle cx="165" cy="45" r="28"/>
+
+    <!-- Body simplified -->
+    <ellipse cx="155" cy="100" rx="30" ry="45" transform="rotate(-20 155 100)"/>
+
+    <!-- Legs simplified -->
+    <path d="M 130 130 L 70 160 L 80 175 L 140 145 Z"/>
+    <path d="M 170 130 L 210 180 L 225 175 L 185 125 Z"/>
+
+    <!-- Arms simplified -->
+    <path d="M 135 85 L 95 95 L 100 110 L 145 100 Z"/>
+    <path d="M 175 80 L 220 55 L 225 70 L 185 95 Z"/>
+  </g>
+
+  <!-- Speed indicator -->
+  <g stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.5">
+    <line x1="3" y1="14" x2="8" y2="14"/>
+    <line x1="2" y1="17" x2="9" y2="17"/>
+    <line x1="3" y1="20" x2="8" y2="20"/>
+  </g>
+</svg>
