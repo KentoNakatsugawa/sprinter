@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrum Dashboard - JTVO</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ict-blue-50: #e8f1fe;
+            --ict-blue-100: #d9e6ff;
+            --ict-blue-200: #c5d7fb;
+            --ict-blue-600: #3460fb;
+            --ict-blue-800: #0031d8;
+            --ict-blue-1000: #00118f;
+            --ict-green-50: #e6f5ec;
+            --ict-green-100: #c2e5d1;
+            --ict-green-600: #259d63;
+            --ict-green-800: #197a4b;
+            --ict-purple-50: #f1eafa;
+            --ict-purple-700: #6f23d0;
+            --ict-purple-800: #5c10be;
+            --ict-orange-50: #ffeee2;
+            --ict-orange-600: #fb5b01;
+            --ict-orange-800: #c74700;
+            --ict-red-50: #fdeeee;
+            --ict-red-100: #ffdada;
+            --ict-red-800: #ec0000;
+            --ict-red-900: #ce0000;
+            --ict-gray-50: #f2f2f2;
+            --ict-gray-100: #e6e6e6;
+            --ict-gray-200: #cccccc;
+            --ict-gray-500: #7f7f7f;
+            --ict-gray-700: #4d4d4d;
+            --ict-gray-800: #333333;
+            --ict-gray-900: #1a1a1a;
+            --ict-white: #ffffff;
+            --ict-elevation-1: 0 2px 8px 1px rgba(0,0,0,0.1), 0 1px 5px 0 rgba(0,0,0,0.15);
+            --ict-elevation-2: 0 2px 12px 2px rgba(0,0,0,0.1), 0 1px 6px 0 rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--ict-gray-50);
+            color: var(--ict-gray-900);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: var(--ict-white);
+            border: 1px solid var(--ict-gray-100);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--ict-elevation-2);
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--ict-gray-500);
+            font-size: 0.875rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--ict-white);
+            border: 1px solid var(--ict-gray-100);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--ict-elevation-1);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-desc {
+            font-size: 0.875rem;
+            color: var(--ict-gray-500);
+            margin-bottom: 1rem;
+        }
+
+        /* KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .kpi-card {
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .kpi-card .label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .kpi-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Team Stats */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .team-stat {
+            padding: 0.75rem;
+            border-left: 3px solid;
+            background: #f9fafb;
+            border-radius: 0 0.25rem 0.25rem 0;
+        }
+
+        .team-stat .name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.375rem;
+        }
+
+        .team-stat .details {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.75rem;
+            color: var(--ict-gray-700);
+        }
+
+        /* Trend Cards */
+        .trend-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .trend-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .trend-card {
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: var(--ict-elevation-1);
+        }
+
+        .trend-card .team-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .trend-card .trend-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .trend-card .trend-change {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            opacity: 0.85;
+        }
+
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-top: 1rem;
+        }
+
+        .chart-small {
+            height: 300px;
+        }
+
+        /* Sprint Cards */
+        .sprint-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .sprint-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sprint-card {
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 1px solid;
+            box-shadow: var(--ict-elevation-1);
+        }
+
+        .sprint-card .label {
+            font-size: 0.75rem;
+            opacity: 0.75;
+        }
+
+        .sprint-card .big {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .pbar {
+            background: var(--ict-gray-100);
+            border-radius: 0.25rem;
+            height: 8px;
+            overflow: hidden;
+            margin: 6px 0;
+        }
+
+        .pbar-fill {
+            height: 100%;
+            border-radius: 0.25rem;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--ict-gray-100);
+        }
+
+        th {
+            background: var(--ict-gray-50);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: var(--ict-gray-50);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--ict-gray-100);
+            padding-bottom: 0.5rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            background: var(--ict-blue-50);
+            color: var(--ict-blue-800);
+            border: 1px solid var(--ict-blue-200);
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
+        }
+
+        .tab:hover {
+            background: var(--ict-blue-100);
+            border-color: var(--ict-blue-600);
+        }
+
+        .tab.active {
+            background: var(--ict-blue-800);
+            color: var(--ict-white);
+            border-color: var(--ict-blue-800);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Alert */
+        .alert {
+            border-radius: 0.5rem;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+
+        .alert-green {
+            background: var(--ict-green-50);
+            border-color: var(--ict-green-600);
+            color: var(--ict-green-800);
+        }
+
+        .alert-yellow {
+            background: var(--ict-orange-50);
+            border-color: var(--ict-orange-600);
+            color: var(--ict-orange-800);
+        }
+
+        .alert-red {
+            background: var(--ict-red-50);
+            border-color: var(--ict-red-800);
+            color: var(--ict-red-900);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--ict-gray-500);
+            font-size: 0.75rem;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--ict-gray-500);
+        }
+
+        /* Two column layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Scrum Dashboard</h1>
+            <p>開発チーム全体の可視化とKPI追跡</p>
+        </div>
+
+        <div id="sufficiency-alert"></div>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="team">チーム別ダッシュボード</button>
+            <button class="tab" data-tab="individual">個人別ベロシティ</button>
+        </div>
+
+        <div id="team-tab" class="tab-content active">
+            <div id="loading" class="loading">データを読み込み中...</div>
+
+            <!-- KPI Summary -->
+            <div id="kpi-section" class="card" style="display:none;">
+                <p class="card-title">チーム全体ベロシティサマリ</p>
+                <p class="card-desc">選択期間内の全チーム合算KPI。SP = Jira上の自己申告ストーリーポイント</p>
+                <div class="kpi-grid" id="kpi-grid"></div>
+                <div class="team-grid" id="team-stats"></div>
+            </div>
+
+            <!-- Velocity Trend -->
+            <div id="trend-section" class="card" style="display:none;">
+                <p class="card-title">ベロシティトレンド分析</p>
+                <p class="card-desc">直近8週のSP推移から算出。直近3週平均 vs 前3週平均の変化率で改善/安定/低下を判定</p>
+                <div class="trend-grid" id="trend-grid"></div>
+            </div>
+
+            <!-- Velocity Chart -->
+            <div id="velocity-section" class="card" style="display:none;">
+                <p class="card-title">チームベロシティ</p>
+                <p class="card-desc">棒グラフ: 週別完了SP（完了日ベース）｜実線: 3週移動平均</p>
+                <div class="chart-container">
+                    <canvas id="velocity-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Achievement Rate Chart -->
+            <div id="achievement-section" class="card" style="display:none;">
+                <p class="card-title">スプリント達成率推移</p>
+                <p class="card-desc">完了SP / 計画SPの週別推移</p>
+                <div class="chart-container chart-small">
+                    <canvas id="achievement-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Sprint Progress -->
+            <div id="sprint-section" class="card" style="display:none;">
+                <p class="card-title">現在のスプリント進捗状況</p>
+                <p class="card-desc">アクティブなスプリントの完了SP / 計画SP</p>
+                <div class="sprint-grid" id="sprint-grid"></div>
+            </div>
+
+            <!-- Leaderboard & Status -->
+            <div class="two-col">
+                <div id="leaderboard-section" class="card" style="display:none;">
+                    <p class="card-title">個人別 SP ランキング</p>
+                    <p class="card-desc">期間別の完了SP順</p>
+                    <div class="table-container">
+                        <table id="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>担当者</th>
+                                    <th>イシュー数</th>
+                                    <th>合計SP</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="status-section" class="card" style="display:none;">
+                    <p class="card-title">ステータス分布</p>
+                    <p class="card-desc">Jiraステータスカテゴリ別のSP割合</p>
+                    <div class="chart-container chart-small">
+                        <canvas id="status-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="individual-tab" class="tab-content">
+            <div id="individual-section" class="card">
+                <p class="card-title">個人別ベロシティ</p>
+                <p class="card-desc">担当者ごとの週別完了SP</p>
+                <div class="chart-container">
+                    <canvas id="individual-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <p class="card-title">個人別ベロシティ詳細</p>
+                <div class="table-container">
+                    <table id="individual-table">
+                        <thead>
+                            <tr>
+                                <th>担当者</th>
+                                <th>チーム</th>
+                                <th>完了SP合計</th>
+                                <th>イシュー数</th>
+                                <th>週平均SP</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>JTVO - Jira Truth Velocity Observer | データ更新: <span id="export-date">-</span></p>
+        </div>
+    </div>
+
+    <script>
+        const TEAM_COLORS = {
+            'A Scrum': '#0031d8',
+            'B Scrum': '#6f23d0',
+            'AI&Analytics': '#259d63'
+        };
+
+        const TEAM_ORDER = ['A Scrum', 'B Scrum', 'AI&Analytics'];
+
+        let dashboardData = null;
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab + '-tab').classList.add('active');
+            });
+        });
+
+        // Load data
+        async function loadData() {
+            try {
+                const response = await fetch('data/dashboard_data.json');
+                dashboardData = await response.json();
+                renderDashboard();
+            } catch (error) {
+                document.getElementById('loading').innerHTML =
+                    '<p style="color: var(--ict-red-800);">データの読み込みに失敗しました。</p>';
+                console.error('Error loading data:', error);
+            }
+        }
+
+        function renderDashboard() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('export-date').textContent = dashboardData.exportedAt;
+
+            renderSufficiencyAlert();
+            renderKPIs();
+            renderTrendCards();
+            renderVelocityChart();
+            renderAchievementChart();
+            renderSprintProgress();
+            renderLeaderboard();
+            renderStatusChart();
+            renderIndividualVelocity();
+        }
+
+        function renderSufficiencyAlert() {
+            const suf = dashboardData.sufficiency;
+            if (!suf) return;
+
+            const pct = Math.round(suf.sufficiency * 10) / 10;
+            let alertClass, msg;
+
+            if (pct < 70) {
+                alertClass = 'alert-red';
+                msg = `<strong>Sufficiency Alert: ${pct}%</strong> — Future SP (${suf.future_sp}) / Avg Velocity (${suf.avg_velocity.toFixed(1)}). バックログ補充が必要です。`;
+            } else if (pct < 100) {
+                alertClass = 'alert-yellow';
+                msg = `<strong>Sufficiency: ${pct}%</strong> — Future SP (${suf.future_sp}) / Avg Velocity (${suf.avg_velocity.toFixed(1)})`;
+            } else {
+                alertClass = 'alert-green';
+                msg = `<strong>Sufficiency: ${pct}%</strong> — バックログは健全です。`;
+            }
+
+            document.getElementById('sufficiency-alert').innerHTML =
+                `<div class="alert ${alertClass}">${msg}</div>`;
+        }
+
+        function renderKPIs() {
+            const section = document.getElementById('kpi-section');
+            section.style.display = 'block';
+
+            const summary = dashboardData.teamSummary;
+            const totalSP = summary.reduce((s, t) => s + (t.total_sp || 0), 0);
+            const doneSP = summary.reduce((s, t) => s + (t.done_sp || 0), 0);
+            const completion = totalSP > 0 ? (doneSP / totalSP * 100).toFixed(1) : 0;
+
+            // Calculate weekly average
+            const velocity = dashboardData.velocity;
+            const weeklyTotals = {};
+            velocity.forEach(v => {
+                weeklyTotals[v.week_start] = (weeklyTotals[v.week_start] || 0) + v.done_sp;
+            });
+            const weeks = Object.values(weeklyTotals);
+            const avgWeekly = weeks.length > 0 ? weeks.reduce((a, b) => a + b, 0) / weeks.length : 0;
+
+            const kpis = [
+                { label: '合計 SP', value: Math.round(totalSP), bg: '#e8f1fe', fg: '#00118f' },
+                { label: '完了 SP', value: Math.round(doneSP), bg: '#e6f5ec', fg: '#115a36' },
+                { label: '達成率', value: `${completion}%`, bg: '#f1eafa', fg: '#5c10be' },
+                { label: '平均ベロシティ/週', value: `${avgWeekly.toFixed(1)} SP`, bg: '#ffeee2', fg: '#c74700' }
+            ];
+
+            document.getElementById('kpi-grid').innerHTML = kpis.map(kpi => `
+                <div class="kpi-card" style="background: ${kpi.bg}; color: ${kpi.fg};">
+                    <p class="label">${kpi.label}</p>
+                    <p class="value">${kpi.value}</p>
+                </div>
+            `).join('');
+
+            // Team stats
+            document.getElementById('team-stats').innerHTML = summary.map(team => `
+                <div class="team-stat" style="border-color: ${TEAM_COLORS[team.team] || '#ccc'};">
+                    <p class="name">${team.team}</p>
+                    <div class="details">
+                        <span>計画: <strong>${Math.round(team.total_sp)} SP</strong></span>
+                        <span>完了: <strong>${Math.round(team.done_sp)} SP</strong></span>
+                        <span>達成率: <strong>${Math.round(team.completion_pct || 0)}%</strong></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderTrendCards() {
+            const section = document.getElementById('trend-section');
+            section.style.display = 'block';
+
+            const recent = dashboardData.recentTrend;
+            const grid = document.getElementById('trend-grid');
+
+            grid.innerHTML = TEAM_ORDER.map(team => {
+                const teamData = recent.filter(r => r.team === team).sort((a, b) =>
+                    new Date(a.week_start) - new Date(b.week_start));
+
+                if (teamData.length < 2) return '';
+
+                const recent3 = teamData.slice(-3);
+                const older3 = teamData.slice(0, 3);
+                const rAvg = recent3.reduce((s, r) => s + r.done_sp, 0) / recent3.length;
+                const oAvg = older3.reduce((s, r) => s + r.done_sp, 0) / older3.length;
+                const change = oAvg > 0 ? ((rAvg - oAvg) / oAvg * 100) : 0;
+
+                let bg, fg, icon, label;
+                if (change > 5) {
+                    bg = '#e6f5ec'; fg = '#115a36'; icon = '↑'; label = '改善';
+                } else if (change < -5) {
+                    bg = '#fdeeee'; fg = '#ce0000'; icon = '↓'; label = '低下';
+                } else {
+                    bg = '#f2f2f2'; fg = '#1a1a1a'; icon = '→'; label = '安定';
+                }
+
+                return `
+                    <div class="trend-card" style="background: ${bg}; color: ${fg};">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <p class="team-label">${team}</p>
+                            <span style="font-size: 1.25rem;">${icon}</span>
+                        </div>
+                        <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+                            <p class="trend-value">${rAvg.toFixed(1)} SP</p>
+                            <span style="font-size: 0.875rem;">${change >= 0 ? '+' : ''}${change.toFixed(1)}%</span>
+                        </div>
+                        <p class="trend-change">直近3週平均・トレンド: ${label}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderVelocityChart() {
+            const section = document.getElementById('velocity-section');
+            section.style.display = 'block';
+
+            const velocity = dashboardData.velocity;
+            const weeks = [...new Set(velocity.map(v => v.week_label))].sort();
+
+            const datasets = TEAM_ORDER.map(team => {
+                const teamData = velocity.filter(v => v.team === team);
+                const data = weeks.map(week => {
+                    const d = teamData.find(v => v.week_label === week);
+                    return d ? d.done_sp : 0;
+                });
+
+                return {
+                    label: team,
+                    data: data,
+                    backgroundColor: TEAM_COLORS[team] + '80',
+                    borderColor: TEAM_COLORS[team],
+                    borderWidth: 1
+                };
+            });
+
+            // Add moving average lines
+            TEAM_ORDER.forEach(team => {
+                const teamData = velocity.filter(v => v.team === team);
+                const data = weeks.map(week => {
+                    const d = teamData.find(v => v.week_label === week);
+                    return d ? d.done_sp : 0;
+                });
+
+                // Calculate 3-week moving average
+                const ma = data.map((_, i) => {
+                    if (i < 2) return null;
+                    return (data[i] + data[i-1] + data[i-2]) / 3;
+                });
+
+                datasets.push({
+                    label: `${team} 移動平均`,
+                    data: ma,
+                    type: 'line',
+                    borderColor: TEAM_COLORS[team],
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 0
+                });
+            });
+
+            new Chart(document.getElementById('velocity-chart'), {
+                type: 'bar',
+                data: { labels: weeks, datasets: datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'ストーリーポイント' }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'top' }
+                    }
+                }
+            });
+        }
+
+        function renderAchievementChart() {
+            const section = document.getElementById('achievement-section');
+            const timeline = dashboardData.sprintAchievementTimeline;
+
+            if (!timeline || timeline.length === 0) return;
+            section.style.display = 'block';
+
+            const weeks = [...new Set(timeline.map(t => t.week_start))].sort();
+
+            const datasets = TEAM_ORDER.map(team => {
+                const teamData = timeline.filter(t => t.team === team);
+                const data = weeks.map(week => {
+                    const d = teamData.find(t => t.week_start === week);
+                    return d ? d.achievement_pct : null;
+                });
+
+                return {
+                    label: team,
+                    data: data,
+                    borderColor: TEAM_COLORS[team],
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4
+                };
+            });
+
+            new Chart(document.getElementById('achievement-chart'), {
+                type: 'line',
+                data: { labels: weeks.map(w => w.substring(0, 10)), datasets: datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 105,
+                            title: { display: true, text: '達成率 %' }
+                        }
+                    },
+                    plugins: {
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: 60,
+                                    yMax: 60,
+                                    borderColor: '#9ca3af',
+                                    borderDash: [5, 5],
+                                    borderWidth: 1
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderSprintProgress() {
+            const section = document.getElementById('sprint-section');
+            const progress = dashboardData.sprintProgress.filter(p => p.state === 'active');
+
+            if (progress.length === 0) return;
+            section.style.display = 'block';
+
+            document.getElementById('sprint-grid').innerHTML = progress.map(sp => {
+                const pct = sp.total_sp > 0 ? (sp.done_sp / sp.total_sp * 100) : 0;
+                const onTrack = pct >= 60;
+                const bg = onTrack ? '#e6f5ec' : '#ffeee2';
+                const fg = onTrack ? '#115a36' : '#c74700';
+                const bdr = onTrack ? '#c2e5d1' : '#ffc199';
+                const barC = onTrack ? '#259d63' : '#fb5b01';
+                const icon = onTrack ? '✓' : '⚠';
+
+                return `
+                    <div class="sprint-card" style="background: ${bg}; color: ${fg}; border-color: ${bdr};">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                            <span style="font-size: 0.875rem; font-weight: 500;">${sp.team}</span>
+                            <span style="font-size: 1.25rem;">${icon}</span>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.25rem;">
+                                <span class="label">完了率</span>
+                                <span class="big">${Math.round(pct)}%</span>
+                            </div>
+                            <div class="pbar"><div class="pbar-fill" style="width: ${Math.min(pct, 100)}%; background: ${barC};"></div></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 0.75rem; padding-top: 0.5rem; border-top: 1px solid ${bdr};">
+                            <div>
+                                <p class="label" style="margin: 0 0 2px 0;">計画</p>
+                                <p style="font-size: 1rem; font-weight: 700; margin: 0;">${sp.total_sp} SP</p>
+                            </div>
+                            <div>
+                                <p class="label" style="margin: 0 0 2px 0;">完了</p>
+                                <p style="font-size: 1rem; font-weight: 700; margin: 0;">${sp.done_sp} SP</p>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.75rem; margin-top: 0.5rem; opacity: 0.8;">${sp.sprint_name}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderLeaderboard() {
+            const section = document.getElementById('leaderboard-section');
+            section.style.display = 'block';
+
+            const leaderboard = dashboardData.leaderboard.slice(0, 15);
+            const tbody = document.querySelector('#leaderboard-table tbody');
+
+            tbody.innerHTML = leaderboard.map(row => `
+                <tr>
+                    <td>${row.assignee}</td>
+                    <td>${row.issue_count}</td>
+                    <td>${row.total_sp}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderStatusChart() {
+            const section = document.getElementById('status-section');
+            section.style.display = 'block';
+
+            const status = dashboardData.statusBreakdown;
+            const colors = {
+                '完了': '#259d63',
+                '進行中': '#0031d8',
+                'To Do': '#7f7f7f'
+            };
+
+            new Chart(document.getElementById('status-chart'), {
+                type: 'doughnut',
+                data: {
+                    labels: status.map(s => s.status_category),
+                    datasets: [{
+                        data: status.map(s => s.sp),
+                        backgroundColor: status.map(s => colors[s.status_category] || '#999')
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        function renderIndividualVelocity() {
+            const individual = dashboardData.individualVelocity;
+
+            // Aggregate by assignee and team
+            const summary = {};
+            individual.forEach(row => {
+                const key = `${row.assignee}-${row.team}`;
+                if (!summary[key]) {
+                    summary[key] = {
+                        assignee: row.assignee,
+                        team: row.team,
+                        total_sp: 0,
+                        issue_count: 0,
+                        weeks: 0
+                    };
+                }
+                summary[key].total_sp += row.done_sp;
+                summary[key].issue_count += row.issue_count;
+                summary[key].weeks++;
+            });
+
+            const rows = Object.values(summary).sort((a, b) => b.total_sp - a.total_sp);
+
+            // Table
+            const tbody = document.querySelector('#individual-table tbody');
+            tbody.innerHTML = rows.slice(0, 30).map(row => `
+                <tr>
+                    <td>${row.assignee}</td>
+                    <td>${row.team}</td>
+                    <td>${row.total_sp.toFixed(1)}</td>
+                    <td>${row.issue_count}</td>
+                    <td>${(row.total_sp / row.weeks).toFixed(1)}</td>
+                </tr>
+            `).join('');
+
+            // Chart - top 10 assignees
+            const topAssignees = rows.slice(0, 10);
+            const weeks = [...new Set(individual.map(v => v.week_label))].sort();
+
+            const datasets = topAssignees.map(assignee => {
+                const assigneeData = individual.filter(v =>
+                    v.assignee === assignee.assignee && v.team === assignee.team);
+                const data = weeks.map(week => {
+                    const d = assigneeData.find(v => v.week_label === week);
+                    return d ? d.done_sp : 0;
+                });
+
+                return {
+                    label: `${assignee.assignee} (${assignee.team})`,
+                    data: data,
+                    borderColor: TEAM_COLORS[assignee.team] || '#999',
+                    backgroundColor: (TEAM_COLORS[assignee.team] || '#999') + '40',
+                    borderWidth: 2,
+                    fill: false
+                };
+            });
+
+            new Chart(document.getElementById('individual-chart'), {
+                type: 'line',
+                data: { labels: weeks, datasets: datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: '完了SP' }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'right' }
+                    }
+                }
+            });
+        }
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>
